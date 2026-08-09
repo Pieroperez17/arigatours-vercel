@@ -50,18 +50,23 @@
   --borde: #e6e0dd;
 
   /*
-   * Dos fuentes: Fraunces (serif) da caracter a los titulos e Inter
+   * Dos fuentes: Marcellus da caracter a los titulos y Nunito Sans
    * sostiene el texto corrido, que es donde importa la legibilidad.
+   *
+   * Son las sustitutas libres de la pareja Optima + Avenir. Ninguna de las
+   * originales se puede usar sin licencia, y en Google Fonts no existe
+   * nada realmente igual a Optima: Marcellus es la aproximacion mas
+   * cercana por sus remates abiertos.
    *
    * Ninguna de las dos tiene kana ni kanji, asi que en japones el
    * navegador cae a la fuente del sistema. Por eso van listadas despues:
    * Hiragino en Mac, Yu Gothic/Meiryo en Windows. Mincho (con remate) en
-   * los titulos para que acompanie al serif, Gothic (de palo) en el
+   * los titulos para que acompanie a Marcellus, Gothic (de palo) en el
    * cuerpo. Cargar una Noto japonesa costaria cientos de KB.
    */
-  --fuente: 'Inter', 'Segoe UI', Roboto, 'Hiragino Kaku Gothic ProN',
+  --fuente: 'Nunito Sans', 'Segoe UI', Roboto, 'Hiragino Kaku Gothic ProN',
     'Yu Gothic', Meiryo, Helvetica, Arial, sans-serif;
-  --fuente-titulos: 'Fraunces', 'Hiragino Mincho ProN', 'Yu Mincho',
+  --fuente-titulos: 'Marcellus', 'Hiragino Mincho ProN', 'Yu Mincho',
     Georgia, 'Times New Roman', serif;
 
   --alto-navbar: 85px;
@@ -114,8 +119,15 @@ h2,
 h3,
 h4 {
   font-family: var(--fuente-titulos);
-  letter-spacing: -0.015em;
-  line-height: 1.18;
+  /*
+   * Marcellus solo existe en un peso. Sin este 400 el navegador ve que el
+   * titulo pide negrita, no la encuentra, y la fabrica engordando los
+   * trazos: el resultado es una letra sucia y deformada. Fijandolo se usa
+   * el dibujo real, que es como esta pensada para titulares.
+   */
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.2;
 }
 
 /* "clip" recorta igual que "hidden" pero NO convierte el body en contenedor
@@ -933,8 +945,16 @@ button {
   z-index: 2;
 }
 
+/*
+ * Excepcion: este titulo va en la sans, no en la serif de titulares.
+ *
+ * Son 0.88rem en blanco sobre una foto. Marcellus solo tiene un peso y a
+ * ese tamanio, contra una imagen, se lee demasiado fino. Nunito Sans si
+ * trae una negrita de verdad, que es la que aguanta ahi.
+ */
 .tarjeta-tour-texto h3 {
   color: var(--blanco);
+  font-family: var(--fuente);
   font-size: 0.88rem;
   font-weight: 700;
   margin-top: 0.3rem;
