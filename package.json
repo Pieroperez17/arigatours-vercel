@@ -1,0 +1,32 @@
+{
+  "name": "arigatours-vercel",
+  "version": "1.0.0",
+  "description": "ArigaTours desplegado entero en Vercel (API serverless + Neon + Blob)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch backend/servidor.js",
+    "iniciar": "node backend/servidor.js",
+    "construir": "npm install --prefix frontend && npm run build --prefix frontend",
+    "build": "npm install --prefix frontend && npm run build --prefix frontend",
+    "migrar": "node backend/scripts/migrarEsquema.js",
+    "sembrar": "node backend/scripts/sembrarDatos.js",
+    "preparar": "npm run migrar && npm run sembrar"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@vercel/blob": "^0.27.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.2.0",
+    "nodemailer": "^6.9.16",
+    "pg": "^8.13.1"
+  }
+}

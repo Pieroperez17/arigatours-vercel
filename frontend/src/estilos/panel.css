@@ -1,0 +1,513 @@
+/* ==========================================================================
+   ESTILOS DEL PANEL DE ADMINISTRACION
+   Separados de global.css porque solo se usan en /panel.
+   ========================================================================== */
+
+/* ── Botón flotante de WhatsApp (visible en toda la web) ── */
+.whatsapp-flotante {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--verde-whatsapp);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  z-index: 9000;
+  text-decoration: none;
+  transition: transform 0.25s ease;
+}
+
+.whatsapp-flotante:hover { transform: scale(1.08); }
+
+@media (max-width: 768px) {
+  .whatsapp-flotante { width: 50px; height: 50px; font-size: 1.6rem; right: 16px; bottom: 16px; }
+}
+
+/* ── Ingreso ── */
+.ingreso {
+  min-height: calc(100vh - var(--alto-navbar));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background: linear-gradient(135deg, var(--rosa-claro), var(--fondo));
+}
+
+.ingreso-tarjeta {
+  width: 100%;
+  max-width: 420px;
+  background: var(--blanco);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.ingreso-logo { height: 64px; width: auto; margin: 0 auto 1.2rem; }
+
+.ingreso-tarjeta h1 { font-size: 1.55rem; margin-bottom: 0.4rem; }
+
+.ingreso-ayuda { color: var(--texto-suave); font-size: 0.92rem; margin-bottom: 1.8rem; }
+
+.ingreso-tarjeta .panel-campo { text-align: left; }
+
+/* ── Estructura del panel ── */
+.panel {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 5% 5rem;
+}
+
+.panel-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--borde);
+}
+
+.panel-cabecera h1 { font-size: 1.85rem; }
+
+.panel-usuario { color: var(--texto-suave); font-size: 0.9rem; margin-top: 0.35rem; }
+
+.panel-pestanias {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.panel-pestania {
+  padding: 0.7rem 1.3rem;
+  border: 1px solid var(--borde);
+  background: var(--blanco);
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  transition: all 0.2s;
+}
+
+.panel-pestania:hover { border-color: var(--rojo); color: var(--rojo); }
+
+.panel-pestania.activa {
+  background: var(--rojo);
+  border-color: var(--rojo);
+  color: var(--blanco);
+}
+
+.panel-seccion { animation: aparecer 0.3s ease; }
+
+.panel-barra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.panel-barra h2 {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.panel-contador {
+  background: var(--rosa-claro);
+  color: var(--rojo);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+}
+
+.panel-contador.pendiente { background: #fff3cd; color: #8a6100; }
+
+/* ── Avisos ── */
+.panel-aviso {
+  padding: 0.9rem 1.1rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  font-size: 0.93rem;
+}
+
+.panel-aviso.exito { background: #e8f6ec; border: 1px solid #28a745; color: #1c6b2e; }
+.panel-aviso.error { background: #fdeaea; border: 1px solid var(--rojo); color: #9c1017; }
+
+/* ── Tabla ── */
+.panel-tabla-envoltura {
+  overflow-x: auto;
+  background: var(--blanco);
+  border-radius: 12px;
+  box-shadow: var(--sombra-suave);
+}
+
+.panel-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 820px;
+}
+
+.panel-tabla th {
+  text-align: left;
+  padding: 1rem;
+  background: #faf6f4;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-suave);
+  border-bottom: 1px solid var(--borde);
+  white-space: nowrap;
+}
+
+.panel-tabla td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #f2eeec;
+  font-size: 0.92rem;
+  vertical-align: middle;
+}
+
+.panel-tabla tr:last-child td { border-bottom: none; }
+
+.panel-tabla tbody tr:hover { background: #fffaf9; }
+
+.panel-miniatura {
+  width: 62px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #eee;
+}
+
+.panel-id { color: #aaa; font-size: 0.78rem; }
+
+.panel-etiqueta {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #eee;
+  color: #555;
+  white-space: nowrap;
+}
+
+.panel-etiqueta.privado { background: #e7f0fd; color: #1b57a8; }
+.panel-etiqueta.gratuito { background: #e8f6ec; color: #1c6b2e; }
+.panel-etiqueta.activo { background: #e8f6ec; color: #1c6b2e; }
+.panel-etiqueta.oculto { background: #f1f1f1; color: #777; }
+.panel-etiqueta.pendiente { background: #fff3cd; color: #8a6100; }
+
+.panel-celda-acciones { display: flex; gap: 0.4rem; }
+
+.panel-boton-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--borde);
+  background: var(--blanco);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--texto-suave);
+  transition: background 0.18s ease, border-color 0.18s ease,
+              color 0.18s ease, transform 0.12s ease;
+}
+
+.panel-boton-icono:hover {
+  border-color: var(--rojo);
+  color: var(--rojo);
+  background: #fff5f5;
+}
+
+.panel-boton-icono:active { transform: translateY(1px); }
+
+.panel-boton-icono:focus-visible {
+  outline: none;
+  border-color: var(--rojo);
+  box-shadow: 0 0 0 3px rgba(var(--rojo-rgb), 0.2);
+}
+
+.panel-boton-icono.peligro:hover {
+  background: var(--rojo);
+  border-color: var(--rojo);
+  color: #fff;
+}
+
+/* ── Formularios ── */
+.panel-formulario {
+  background: var(--blanco);
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: var(--sombra-suave);
+  animation: aparecer 0.3s ease;
+}
+
+.panel-formulario > h2 {
+  margin-bottom: 1.6rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--borde);
+  font-size: 1.4rem;
+}
+
+.panel-grupo {
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 1.4rem;
+  margin-bottom: 1.6rem;
+}
+
+.panel-grupo legend {
+  padding: 0 0.6rem;
+  font-weight: 700;
+  color: var(--rojo);
+  font-size: 0.95rem;
+}
+
+.panel-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.1rem;
+}
+
+.panel-campo { margin-bottom: 1.1rem; }
+
+.panel-campo label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.panel-campo input[type='text'],
+.panel-campo input[type='email'],
+.panel-campo input[type='password'],
+.panel-campo input[type='number'],
+.panel-campo select,
+.panel-campo textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--borde);
+  border-radius: 10px;
+  font-family: var(--fuente);
+  font-size: 0.95rem;
+  background: var(--blanco);
+  color: var(--texto);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.panel-campo input:hover:not(:disabled),
+.panel-campo select:hover,
+.panel-campo textarea:hover {
+  border-color: #cfc6c2;
+}
+
+.panel-campo input:focus,
+.panel-campo select:focus,
+.panel-campo textarea:focus {
+  outline: none;
+  border-color: var(--rojo);
+  box-shadow: 0 0 0 3px rgba(var(--rojo-rgb), 0.15);
+}
+
+/* Misma flecha propia que en los filtros de la web publica */
+.panel-campo select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.4rem;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+}
+
+/* Los selectores de archivo nativos se ven distintos en cada navegador:
+   se le da forma al boton interno para que encaje con el resto. */
+.panel-campo input[type='file'] {
+  width: 100%;
+  font-family: var(--fuente);
+  font-size: 0.88rem;
+  color: var(--texto-suave);
+}
+
+.panel-campo input[type='file']::file-selector-button {
+  margin-right: 0.8rem;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--borde);
+  border-radius: 9px;
+  background: var(--blanco);
+  color: var(--texto-suave);
+  font-family: var(--fuente);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.panel-campo input[type='file']::file-selector-button:hover {
+  background: #f6f1ef;
+  border-color: #cfc6c2;
+  color: var(--texto);
+}
+
+.panel-campo input:disabled { background: #f5f2f1; color: #999; }
+
+.panel-campo textarea { resize: vertical; line-height: 1.6; }
+
+.panel-campo small {
+  display: block;
+  margin-top: 0.35rem;
+  color: #999;
+  font-size: 0.79rem;
+}
+
+.panel-campo-casilla {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.1rem;
+}
+
+.panel-campo-casilla label { margin-bottom: 0; font-weight: 500; }
+
+.panel-campo-casilla input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--rojo);
+  cursor: pointer;
+}
+
+/* Selector de idioma dentro del formulario de tour */
+.panel-idiomas {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.panel-idioma {
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--borde);
+  background: var(--blanco);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  transition: all 0.2s;
+}
+
+.panel-idioma:hover { border-color: var(--rojo); color: var(--rojo); }
+
+.panel-idioma.activo {
+  background: var(--rojo);
+  border-color: var(--rojo);
+  color: var(--blanco);
+}
+
+.panel-idioma.agregar { border-style: dashed; color: #999; }
+
+.panel-acciones {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+}
+
+/* ── Consultas ── */
+.lista-consultas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.2rem;
+}
+
+.consulta {
+  background: var(--blanco);
+  border-radius: 12px;
+  padding: 1.3rem;
+  box-shadow: var(--sombra-suave);
+  border-left: 4px solid var(--rojo);
+}
+
+.consulta.atendida { border-left-color: #28a745; opacity: 0.78; }
+
+.consulta-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+.consulta-cabecera strong { display: block; font-size: 1.03rem; }
+
+.consulta-fecha { font-size: 0.79rem; color: #999; }
+
+.consulta-etiquetas { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+
+.consulta-datos {
+  list-style: none;
+  margin-bottom: 0.9rem;
+  font-size: 0.87rem;
+  color: #555;
+}
+
+.consulta-datos li {
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.consulta-datos i { color: var(--rojo); width: 16px; }
+
+.consulta-mensaje {
+  background: #faf7f6;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 1rem;
+  white-space: pre-wrap;
+}
+
+.consulta-acciones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* En las tarjetas de consulta caben varias acciones seguidas, asi que
+   los botones van en tamano reducido. */
+.consulta-acciones .boton-contorno,
+.consulta-acciones .boton-suave {
+  font-size: 0.82rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9px;
+}
+
+@media (max-width: 768px) {
+  .panel { padding: 1.75rem 4% 4rem; }
+  .panel-formulario { padding: 1.25rem; }
+  .panel-grupo { padding: 1rem; }
+  .lista-consultas { grid-template-columns: 1fr; }
+}

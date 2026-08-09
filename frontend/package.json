@@ -1,0 +1,23 @@
+{
+  "name": "arigatours-web",
+  "version": "1.0.0",
+  "description": "Web publica y panel de administracion (React + Vite)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "construir": "vite build",
+    "build": "vite build",
+    "previsualizar": "vite preview --port 4173",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}
