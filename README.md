@@ -17,15 +17,34 @@ al revés. Son dos bases distintas que arrancaron con la misma semilla.
 ## Cómo está montado
 
 ```
-api/[...ruta].js   → punto de entrada de Vercel; reexporta la app de Express
-backend/           → la API tal cual (rutas, controladores, modelos)
-frontend/          → la web en React + Vite
-vercel.json        → compila el frontend y manda lo demás a index.html
+api/index.js   → punto de entrada de Vercel; entrega la petición a Express
+backend/       → la API tal cual (rutas, controladores, modelos)
+frontend/      → la web en React + Vite
+vercel.json    → compila el frontend y reparte las rutas
 ```
 
-El nombre `[...ruta].js` es lo que hace que Vercel enrute a esa función
-**todo** lo que empiece por `/api`. Con un `index.js` normal solo llegaría
-`/api` a secas.
+### El reparto de rutas, que tiene trampa
+
+`vercel.json` tiene dos reglas y **el orden importa**:
+
+1. `/api/(.*)` → `/api`, que manda toda la API a la función.
+2. `/((?!api/).*)` → `/index.html`, para que el enrutado de React funcione al
+   entrar directo a `/tours`.
+
+La segunda lleva un `(?!api/)` a propósito. Sin él se traga también las
+llamadas a la API y `/api/salud` devuelve el HTML de la portada.
+
+La primera regla parece redundante —Vercel ya enruta solo la carpeta `api/`—
+pero no lo es. Se probó primero con un archivo comodín `api/[...ruta].js` sin
+esa regla, y el resultado fue que **solo llegaban las rutas de un tramo**:
+`/api/tours` respondía y `/api/tours/ciudades` daba 404 de Vercel. Con la
+regla explícita llegan todas.
+
+La función recibe la URL original completa, no la reescrita, así que Express
+casa sus rutas con normalidad. Si alguna vez hay dudas, cada respuesta lleva
+una cabecera `x-ruta-recibida` con lo que Express vio de verdad: sirve para
+distinguir un 404 de Vercel (la petición no llegó) de uno de Express (llegó
+pero la ruta no existe).
 
 `backend/servidor.js` exporta la aplicación armada pero **sin llamar a
 `listen`**: en serverless no hay un proceso esperando en un puerto, la
