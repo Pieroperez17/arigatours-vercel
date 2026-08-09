@@ -1946,14 +1946,63 @@ button {
 }
 
 .socio-tarjeta {
+  position: relative;
   width: 100%;
   max-width: 26rem;
   padding: 2rem 1.5rem 1.5rem;
   border: 1px solid var(--borde);
   border-radius: 1.25rem;
-  background: var(--blanco);
+  /* Crema arriba y rosado abajo, para que el torii y la pagoda del fondo
+     se apoyen en un cielo y no floten sobre blanco. */
+  background: linear-gradient(170deg, #fffaf6 0%, #fdeee9 55%, #fbdfe2 100%);
   box-shadow: var(--sombra-media);
   text-align: center;
+  /* El fondo decorativo llega hasta el borde: aqui se recorta a la curva. */
+  overflow: hidden;
+}
+
+/*
+ * El dibujo cubre la tarjeta entera por detras del contenido. Va en
+ * position absolute y no como background-image para poder darle color con
+ * las variables de la marca desde el propio CSS.
+ */
+.socio-fondo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Muy bajas de opacidad a proposito: es un fondo, y por encima va texto
+   que tiene que seguir leyendose sin esfuerzo. */
+.socio-fondo-siluetas {
+  fill: var(--rosa-sakura);
+  opacity: 0.16;
+}
+
+.socio-fondo-tallo {
+  fill: none;
+  stroke: #b9776a;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+
+.socio-fondo-petalo {
+  fill: var(--rosa-sakura);
+  opacity: 0.55;
+}
+
+.socio-fondo-centro {
+  fill: #f5a3a3;
+  opacity: 0.75;
+}
+
+/* Levanta el contenido por encima del SVG, que va detras. */
+.socio-contenido {
+  position: relative;
+  z-index: 1;
 }
 
 .socio-foto {

@@ -11,6 +11,7 @@ import { useParams, Link } from 'react-router-dom';
 import { apiSocios } from '../servicios/clienteApi.js';
 import { usarPeticion } from '../ganchos/usarPeticion.js';
 import { Cargando } from '../componentes/Estado.jsx';
+import FondoSakura from '../componentes/FondoSakura.jsx';
 import { SITIO } from '../configuracion/sitio.js';
 
 /**
@@ -62,6 +63,10 @@ export default function PaginaContactoSocio() {
   return (
     <section className="socio">
       <article className="socio-tarjeta">
+        <FondoSakura />
+
+        {/* Todo el contenido va por encima del fondo decorativo. */}
+        <div className="socio-contenido">
         {socio.foto ? (
           <img className="socio-foto" src={socio.foto} alt={socio.nombre} />
         ) : (
@@ -102,7 +107,8 @@ export default function PaginaContactoSocio() {
           </Link>
         </div>
 
-        <p className="socio-pie">Gracias por confiar en nosotros ❤</p>
+          <p className="socio-pie">Gracias por confiar en nosotros ❤</p>
+        </div>
       </article>
     </section>
   );

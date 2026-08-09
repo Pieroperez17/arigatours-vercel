@@ -538,9 +538,11 @@
 
 .compartir-ventana {
   width: 100%;
-  max-width: 44rem;
-  max-height: 90vh;
+  max-width: 40rem;
+  max-height: 88vh;
   overflow-y: auto;
+  /* Nada debe empujar la ventana a lo ancho: si algo no cabe, se ajusta. */
+  overflow-x: hidden;
   border-radius: 1rem;
   background: var(--blanco);
   box-shadow: var(--sombra-media);
@@ -558,7 +560,7 @@
 .compartir-cabecera h3 {
   margin: 0;
   color: var(--rojo);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
 }
 
 .compartir-cerrar {
@@ -578,19 +580,22 @@
 }
 
 /*
- * Dos columnas en escritorio (QR a la izquierda, enlace a la derecha) y una
- * sola apiladas en movil, donde no caben lado a lado.
+ * El QR a la izquierda y el enlace a la derecha, en columnas de ancho fijo
+ * y flexible. La primera se mide en rem y no con "auto": con "auto" el
+ * ancho lo decidia el contenido, y una imagen grande estiraba la ventana
+ * hasta desbordarla.
  */
 .compartir-cuerpo {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 1.6rem;
+  grid-template-columns: 13rem minmax(0, 1fr);
+  gap: 1.5rem;
   padding: 1.4rem;
+  align-items: start;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 620px) {
   .compartir-cuerpo {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -602,20 +607,21 @@
 }
 
 /*
- * El lienzo se genera a 512 px para que el PNG descargado sirva para
- * imprimir, pero en pantalla se muestra a 200: el tamano de descarga y el
- * de visualizacion son cosas distintas.
+ * La imagen se genera a 512 px para que el archivo descargado sirva para
+ * imprimir, pero en pantalla se muestra a 13 rem: el tamano de descarga y
+ * el de visualizacion son cosas distintas.
  */
-.compartir-lienzo {
-  width: 200px;
-  height: 200px;
+.compartir-imagen {
+  width: 100%;
+  max-width: 13rem;
+  height: auto;
   border: 1px solid var(--borde);
   border-radius: 0.6rem;
-  padding: 0.4rem;
   background: var(--blanco);
 }
 
 .compartir-enlace {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -628,6 +634,7 @@
 
 .compartir-enlace input {
   width: 100%;
+  min-width: 0;
   padding: 0.65rem 0.8rem;
   border: 1px solid var(--borde);
   border-radius: 0.5rem;

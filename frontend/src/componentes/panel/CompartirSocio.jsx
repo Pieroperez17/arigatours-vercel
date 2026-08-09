@@ -1,12 +1,12 @@
 /**
  * Ventana para repartir la pagina de un socio: por enlace o por QR.
  *
- * El QR se dibuja en el navegador, no lo genera ningun servicio externo. Asi
+ * El QR se genera en el navegador, no lo dibuja ningun servicio externo. Asi
  * la direccion del socio no viaja a terceros y sigue funcionando sin
  * conexion, que importa cuando se prepara una tanda de tarjetas.
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
 
 /**
@@ -21,30 +21,36 @@ export function direccionSocio(id) {
 
 export default function CompartirSocio({ socio, alCerrar }) {
   const [copiado, setCopiado] = useState(false);
+  const [imagenQr, setImagenQr] = useState('');
   const [errorQr, setErrorQr] = useState(null);
-  const lienzo = useRef(null);
 
   const direccion = direccionSocio(socio.id);
 
   useEffect(() => {
-    if (!lienzo.current) return;
-
     /*
-     * 512 px y margen de 2 modulos: da un PNG con resolucion de sobra para
-     * imprimir la tarjeta. Un QR pensado solo para la pantalla se ve pixelado
-     * al llevarlo al papel.
+     * Se pide una imagen (toDataURL) y no que dibuje sobre un <canvas>.
+     *
+     * Con canvas, la libreria escribe el tamano en el propio elemento
+     * (style.width = "512px"), y eso gana sobre cualquier regla CSS: el QR
+     * salia a 512 px y desbordaba la ventana. Como imagen, los 512 px se
+     * quedan donde importan -la resolucion del archivo, para imprimir- y el
+     * tamano en pantalla lo decide el CSS.
      *
      * Correccion de errores alta (H): el codigo se sigue leyendo aunque el
      * papel se raye o se manche, que es lo que le pasa a una tarjeta que
      * viaja en un bolsillo.
      */
-    QRCode.toCanvas(
-      lienzo.current,
-      direccion,
-      { width: 512, margin: 2, errorCorrectionLevel: 'H' },
-      (fallo) => setErrorQr(fallo ? fallo.message : null),
-    );
+    QRCode.toDataURL(direccion, { width: 512, margin: 2, errorCorrectionLevel: 'H' })
+      .then((url) => { setImagenQr(url); setErrorQr(null); })
+      .catch((fallo) => setErrorQr(fallo.message));
   }, [direccion]);
+
+  // Cerrar con Escape: es lo que se espera de cualquier ventana modal.
+  useEffect(() => {
+    const alPulsar = (evento) => { if (evento.key === 'Escape') alCerrar(); };
+    window.addEventListener('keydown', alPulsar);
+    return () => window.removeEventListener('keydown', alPulsar);
+  }, [alCerrar]);
 
   async function copiarEnlace() {
     try {
@@ -57,19 +63,8 @@ export default function CompartirSocio({ socio, alCerrar }) {
        * de dejar al usuario sin salida se selecciona el texto para que pueda
        * copiarlo a mano con el teclado.
        */
-      const campo = document.getElementById('compartir-direccion');
-      if (campo) campo.select();
+      document.getElementById('compartir-direccion')?.select();
     }
-  }
-
-  /** Descarga el QR como PNG, listo para mandar a la imprenta. */
-  function descargarQr() {
-    if (!lienzo.current) return;
-
-    const enlace = document.createElement('a');
-    enlace.download = `qr-${socio.id}.png`;
-    enlace.href = lienzo.current.toDataURL('image/png');
-    enlace.click();
   }
 
   return (
@@ -86,13 +81,22 @@ export default function CompartirSocio({ socio, alCerrar }) {
         <div className="compartir-cuerpo">
           <div className="compartir-qr">
             {errorQr ? (
-              <p className="panel-error">No se pudo generar el QR: {errorQr}</p>
+              <p className="panel-aviso error">No se pudo generar el QR: {errorQr}</p>
             ) : (
-              <canvas ref={lienzo} className="compartir-lienzo" />
+              imagenQr && (
+                <img
+                  className="compartir-imagen"
+                  src={imagenQr}
+                  alt={`Código QR de la página de ${socio.nombre}`}
+                />
+              )
             )}
-            <button type="button" className="boton-contorno" onClick={descargarQr}>
-              <i className="fas fa-download" /> Descargar QR
-            </button>
+
+            {imagenQr && (
+              <a className="boton-contorno" href={imagenQr} download={`qr-${socio.id}.png`}>
+                <i className="fas fa-download" /> Descargar QR
+              </a>
+            )}
           </div>
 
           <div className="compartir-enlace">
@@ -111,12 +115,7 @@ export default function CompartirSocio({ socio, alCerrar }) {
                 {copiado ? ' Copiado' : ' Copiar enlace'}
               </button>
 
-              <a
-                className="boton-contorno"
-                href={direccion}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a className="boton-contorno" href={direccion} target="_blank" rel="noreferrer">
                 <i className="fas fa-arrow-up-right-from-square" /> Abrir
               </a>
             </div>
