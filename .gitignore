@@ -6,3 +6,4 @@ dist/
 backend/subidas/
 
 .vercel
+.env*

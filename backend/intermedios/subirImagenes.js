@@ -90,9 +90,26 @@ export async function guardarEnBlob(req, _res, siguiente) {
       for (const grupo of grupos) pendientes.push(...grupo);
     }
 
-    if (pendientes.length > 0 && !process.env.BLOB_READ_WRITE_TOKEN) {
+    /*
+     * Hay dos formas de autenticarse contra Blob y basta con una:
+     *
+     *   · BLOB_STORE_ID, que es la que usa Vercel al conectar un store al
+     *     proyecto. La funcion se identifica sola por OIDC y no hay ningun
+     *     secreto guardado en ningun sitio.
+     *   · BLOB_READ_WRITE_TOKEN, un token fijo. Es lo que hace falta para
+     *     subir imagenes desde fuera de Vercel, por ejemplo en local.
+     *
+     * Se comprueba antes de leer los archivos para dar un error entendible:
+     * el del SDK ("No token found") no dice que lo que falta es conectar el
+     * store al proyecto.
+     */
+    const hayCredenciales =
+      process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN;
+
+    if (pendientes.length > 0 && !hayCredenciales) {
       const error = new Error(
-        'Falta BLOB_READ_WRITE_TOKEN: conecta un store de Vercel Blob al proyecto.',
+        'Sin acceso a Vercel Blob: conecta un store al proyecto, o define ' +
+          'BLOB_READ_WRITE_TOKEN si subes imagenes desde fuera de Vercel.',
       );
       error.estado = 500;
       throw error;
