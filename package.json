@@ -11,6 +11,7 @@
     "build": "npm install --prefix frontend && npm run build --prefix frontend",
     "migrar": "node backend/scripts/migrarEsquema.js",
     "sembrar": "node backend/scripts/sembrarDatos.js",
+    "sembrar:socios": "node backend/scripts/sembrarSocios.js",
     "preparar": "npm run migrar && npm run sembrar"
   },
   "engines": {
