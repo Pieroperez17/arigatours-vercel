@@ -24,6 +24,7 @@ import rutasAutenticacion from './rutas/rutasAutenticacion.js';
 import rutasTours from './rutas/rutasTours.js';
 import rutasBlogs from './rutas/rutasBlogs.js';
 import rutasContacto from './rutas/rutasContacto.js';
+import rutasSocios from './rutas/rutasSocios.js';
 
 const aplicacion = express();
 const PUERTO = Number(process.env.PUERTO) || 4020;
@@ -83,6 +84,7 @@ aplicacion.use('/api/autenticacion', rutasAutenticacion);
 aplicacion.use('/api/tours', rutasTours);
 aplicacion.use('/api/blogs', rutasBlogs);
 aplicacion.use('/api/contacto', rutasContacto);
+aplicacion.use('/api/socios', rutasSocios);
 
 // ── Cierre: 404 y manejo de errores (siempre al final) ─────────────────────
 aplicacion.use(rutaNoEncontrada);

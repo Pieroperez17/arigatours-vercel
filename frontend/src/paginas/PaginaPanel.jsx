@@ -12,11 +12,13 @@ import FormularioIngreso from '../componentes/panel/FormularioIngreso.jsx';
 import GestionTours from '../componentes/panel/GestionTours.jsx';
 import GestionBlogs from '../componentes/panel/GestionBlogs.jsx';
 import GestionConsultas from '../componentes/panel/GestionConsultas.jsx';
+import GestionSocios from '../componentes/panel/GestionSocios.jsx';
 
 const SECCIONES = [
   { clave: 'tours', etiqueta: 'Tours', icono: 'fa-map-location-dot' },
   { clave: 'blogs', etiqueta: 'Blogs', icono: 'fa-newspaper' },
   { clave: 'consultas', etiqueta: 'Consultas', icono: 'fa-envelope-open-text' },
+  { clave: 'contactos', etiqueta: 'Contactos', icono: 'fa-address-card' },
 ];
 
 export default function PaginaPanel() {
@@ -58,6 +60,7 @@ export default function PaginaPanel() {
       {seccion === 'tours' && <GestionTours />}
       {seccion === 'blogs' && <GestionBlogs />}
       {seccion === 'consultas' && <GestionConsultas />}
+      {seccion === 'contactos' && <GestionSocios />}
     </div>
   );
 }

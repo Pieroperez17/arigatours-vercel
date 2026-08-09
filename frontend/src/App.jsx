@@ -16,6 +16,7 @@ import PaginaTours from './paginas/PaginaTours.jsx';
 import PaginaBlogs from './paginas/PaginaBlogs.jsx';
 import PaginaQuienesSomos from './paginas/PaginaQuienesSomos.jsx';
 import PaginaContacto from './paginas/PaginaContacto.jsx';
+import PaginaContactoSocio from './paginas/PaginaContactoSocio.jsx';
 import PaginaPanel from './paginas/PaginaPanel.jsx';
 import PaginaNoEncontrada from './paginas/PaginaNoEncontrada.jsx';
 
@@ -34,6 +35,11 @@ export default function App() {
         <Route path="/blogs" element={<PaginaBlogs />} />
         <Route path="/quienes-somos" element={<PaginaQuienesSomos />} />
         <Route path="/contacto" element={<PaginaContacto />} />
+
+        {/* Pagina de cada socio: es a donde lleva el QR de su tarjeta.
+            React Router ya da preferencia a /contacto sobre esta, asi que el
+            formulario de contacto general no queda tapado. */}
+        <Route path="/contacto/:socio" element={<PaginaContactoSocio />} />
 
         <Route
           path="/panel"

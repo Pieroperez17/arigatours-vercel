@@ -511,3 +511,142 @@
   .panel-grupo { padding: 1rem; }
   .lista-consultas { grid-template-columns: 1fr; }
 }
+
+/* ── Contactos: miniatura sin foto ──────────────────────────────────────────
+   Mismo hueco que la miniatura normal, con la inicial dentro. Sin esto la
+   fila se descuadra cuando un socio todavia no tiene retrato. */
+.panel-miniatura-inicial {
+  display: grid;
+  place-items: center;
+  background: var(--rosa-claro);
+  color: var(--rojo);
+  font-family: var(--fuente-titulos);
+  font-size: 1.4rem;
+}
+
+/* ── Ventana de compartir (enlace y QR) ──────────────────────────────────── */
+.compartir-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(61, 30, 26, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.compartir-ventana {
+  width: 100%;
+  max-width: 44rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 1rem;
+  background: var(--blanco);
+  box-shadow: var(--sombra-media);
+}
+
+.compartir-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid var(--borde);
+}
+
+.compartir-cabecera h3 {
+  margin: 0;
+  color: var(--rojo);
+  font-size: 1.25rem;
+}
+
+.compartir-cerrar {
+  border: none;
+  background: none;
+  color: var(--texto-suave);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.4rem;
+}
+
+.compartir-cerrar:hover {
+  background: var(--fondo);
+  color: var(--rojo);
+}
+
+/*
+ * Dos columnas en escritorio (QR a la izquierda, enlace a la derecha) y una
+ * sola apiladas en movil, donde no caben lado a lado.
+ */
+.compartir-cuerpo {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.6rem;
+  padding: 1.4rem;
+}
+
+@media (max-width: 640px) {
+  .compartir-cuerpo {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compartir-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+/*
+ * El lienzo se genera a 512 px para que el PNG descargado sirva para
+ * imprimir, pero en pantalla se muestra a 200: el tamano de descarga y el
+ * de visualizacion son cosas distintas.
+ */
+.compartir-lienzo {
+  width: 200px;
+  height: 200px;
+  border: 1px solid var(--borde);
+  border-radius: 0.6rem;
+  padding: 0.4rem;
+  background: var(--blanco);
+}
+
+.compartir-enlace {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.compartir-enlace label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.compartir-enlace input {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.5rem;
+  background: var(--fondo);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.88rem;
+  color: var(--texto);
+}
+
+.compartir-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.compartir-ayuda {
+  margin: 0.4rem 0 0;
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}

@@ -100,3 +100,26 @@ CREATE TABLE IF NOT EXISTS consultas (
 );
 
 CREATE INDEX IF NOT EXISTS idx_consultas_creado ON consultas (creado_en DESC);
+
+
+-- ── Socios: paginas de contacto individuales (/contacto/:id) ───────────────
+-- Cada socio tiene su propia pagina con sus botones de contacto. La comparten
+-- por QR impreso en su tarjeta, por eso el id es corto y legible ("daniela"):
+-- forma parte de la direccion y se lee en voz alta.
+CREATE TABLE IF NOT EXISTS socios (
+  id                VARCHAR(120) PRIMARY KEY,          -- ej: "daniela"
+  nombre            VARCHAR(200) NOT NULL,
+  cargo             VARCHAR(250) NOT NULL DEFAULT '',
+  foto              TEXT         NOT NULL DEFAULT '',
+  whatsapp          VARCHAR(60)  NOT NULL DEFAULT '',  -- con prefijo pais
+  instagram         VARCHAR(120) NOT NULL DEFAULT '',  -- usuario, sin la arroba
+  correo            VARCHAR(255) NOT NULL DEFAULT '',
+  mensaje_whatsapp  TEXT         NOT NULL DEFAULT '',  -- texto que se autocompleta al abrir el chat
+  orden             INTEGER      NOT NULL DEFAULT 0,
+  activo            BOOLEAN      NOT NULL DEFAULT TRUE,
+  creado_en         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  actualizado_en    TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_socios_activo ON socios (activo);
+CREATE INDEX IF NOT EXISTS idx_socios_orden  ON socios (orden);

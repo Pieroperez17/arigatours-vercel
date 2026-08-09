@@ -21,6 +21,7 @@ import { pool } from '../configuracion/baseDatos.js';
 import * as Usuario from '../modelos/modeloUsuario.js';
 import * as Tour from '../modelos/modeloTour.js';
 import * as Blog from '../modelos/modeloBlog.js';
+import * as Socio from '../modelos/modeloSocio.js';
 import { generarClave, esPrecioGratuito, normalizarLista } from '../utilidades/ayudas.js';
 
 const carpetaActual = path.dirname(fileURLToPath(import.meta.url));
@@ -242,12 +243,86 @@ async function sembrarBlogs() {
   console.log(`[siembra] Articulos cargados: ${articulos.length}`);
 }
 
+/**
+ * Paginas de contacto de los socios.
+ *
+ * El id es el ultimo tramo de la direccion que llevan impresa en el QR de su
+ * tarjeta (/contacto/daniela), asi que conviene no cambiarlo una vez impresas:
+ * las tarjetas ya repartidas dejarian de funcionar.
+ */
+const SOCIOS = [
+  {
+    id: 'daniela',
+    nombre: 'Daniela Harada',
+    cargo: 'Co-founder & Director · Kansai Region',
+    whatsapp: '+81 70-9097-5476',
+    instagram: 'haradadaniela',
+    correo: 'arigatoursceo@gmail.com',
+    orden: 1,
+  },
+  {
+    id: 'calvin',
+    nombre: 'Calvin Lam',
+    cargo: 'Co-founder & Director · Kansai Region',
+    whatsapp: '+81 70-6438-2066',
+    instagram: 'calvinpsss',
+    correo: 'arigatoursceo@gmail.com',
+    orden: 2,
+  },
+  {
+    id: 'jose',
+    nombre: 'José Harada',
+    cargo: 'Co-founder & Director',
+    whatsapp: '+81 80-8808-7190',
+    instagram: 'joseharada',
+    correo: 'arigatoursceo@gmail.com',
+    orden: 3,
+  },
+  {
+    id: 'roman',
+    nombre: 'Roman Leon',
+    cargo: 'Co-founder & Director · Kanto Region',
+    whatsapp: '+34 666 08 77 29',
+    instagram: 'roman_web.dev',
+    correo: 'arigatoursceo@gmail.com',
+    orden: 4,
+  },
+];
+
+async function sembrarSocios() {
+  for (const socio of SOCIOS) {
+    // Solo el nombre de pila: es como se presenta quien entrega la tarjeta.
+    const nombreCorto = socio.nombre.split(' ')[0];
+
+    const datos = {
+      ...socio,
+      foto: '',
+      mensajeWhatsapp:
+        `Hola ${nombreCorto}, escaneé tu tarjeta de ArigaTours y me gustaría ` +
+        'recibir información sobre sus tours en Japón.',
+      activo: true,
+    };
+
+    /*
+     * Si el socio ya existe no se toca. La siembra se repite en cada
+     * despliegue, y sobrescribir aqui borraria la foto que hayan subido o el
+     * mensaje que hayan reescrito desde el panel.
+     */
+    if (!(await Socio.existe(datos.id))) {
+      await Socio.crear(datos);
+    }
+  }
+
+  console.log(`[siembra] Paginas de contacto listas: ${SOCIOS.length}`);
+}
+
 // ── Ejecucion ──────────────────────────────────────────────────────────────
 async function sembrar() {
   console.log('[siembra] Comenzando...');
   await sembrarAdministrador();
   await sembrarTours();
   await sembrarBlogs();
+  await sembrarSocios();
   console.log('[siembra] Terminado correctamente.');
 }
 

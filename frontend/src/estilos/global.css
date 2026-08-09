@@ -1929,3 +1929,138 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Pagina de contacto de un socio (/contacto/:socio)
+
+   Es la pantalla a la que llega quien escanea el QR de una tarjeta, casi
+   siempre desde el movil y de pie en la calle. Por eso todo va en una sola
+   columna estrecha, con botones altos y separados: se maneja con el pulgar
+   y sin pensar.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.socio {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem 3rem;
+}
+
+.socio-tarjeta {
+  width: 100%;
+  max-width: 26rem;
+  padding: 2rem 1.5rem 1.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 1.25rem;
+  background: var(--blanco);
+  box-shadow: var(--sombra-media);
+  text-align: center;
+}
+
+.socio-foto {
+  width: 8.5rem;
+  height: 8.5rem;
+  margin: 0 auto 1.1rem;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--blanco);
+  /* El halo rosado despega el retrato del fondo blanco de la tarjeta. */
+  box-shadow: 0 0 0 3px var(--rosa-claro), var(--sombra-suave);
+}
+
+/* Sin retrato se pinta la inicial: la tarjeta sigue viendose acabada. */
+.socio-foto-inicial {
+  display: grid;
+  place-items: center;
+  background: var(--rosa-claro);
+  color: var(--rojo);
+  font-family: var(--fuente-titulos);
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.socio-nombre {
+  margin: 0 0 0.2rem;
+  color: var(--rojo);
+  font-size: 1.9rem;
+}
+
+.socio-cargo {
+  margin: 0 auto 1.4rem;
+  padding-bottom: 1rem;
+  max-width: 18rem;
+  color: var(--texto-suave);
+  font-size: 0.94rem;
+  line-height: 1.4;
+  border-bottom: 2px solid var(--rosa-claro);
+}
+
+.socio-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+/*
+ * Cada boton lleva el color de su servicio (verde WhatsApp, degradado de
+ * Instagram): se reconocen de un vistazo sin leer el texto.
+ *
+ * min-height de 3rem porque es el minimo comodo para tocar con el dedo.
+ */
+.socio-boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.7rem;
+  color: var(--blanco);
+  font-weight: 600;
+  font-size: 0.97rem;
+  text-decoration: none;
+  box-shadow: var(--sombra-suave);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.socio-boton:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: var(--sombra-media);
+}
+
+.socio-boton i {
+  font-size: 1.15rem;
+}
+
+.socio-boton.whatsapp { background: var(--verde-whatsapp); }
+
+.socio-boton.instagram {
+  background: linear-gradient(70deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%);
+}
+
+.socio-boton.correo { background: var(--rojo-precio); }
+
+.socio-boton.web {
+  background: var(--rosa-sakura);
+  color: var(--rojo-oscuro);
+}
+
+.socio-pie {
+  margin: 1.4rem 0 0;
+  color: var(--texto-suave);
+  font-size: 0.87rem;
+}
+
+/* Cuando la direccion no corresponde a ningun socio. */
+.socio-vacio {
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.socio-vacio p {
+  margin-bottom: 1.6rem;
+  color: var(--texto-suave);
+}

@@ -122,6 +122,22 @@ export const apiBlogs = {
   eliminar: (id) => peticion(`/blogs/${id}`, { method: 'DELETE' }),
 };
 
+// ── Socios (paginas de contacto individuales) ──────────────────────────────
+
+export const apiSocios = {
+  listar: () => peticion('/socios'),
+
+  obtener: (id) => peticion(`/socios/${id}`),
+
+  listarTodosAdmin: () => peticion('/socios/admin/todos'),
+
+  crear: (formulario) => peticion('/socios', { method: 'POST', body: formulario }),
+
+  actualizar: (id, formulario) => peticion(`/socios/${id}`, { method: 'PUT', body: formulario }),
+
+  eliminar: (id) => peticion(`/socios/${id}`, { method: 'DELETE' }),
+};
+
 // ── Autenticacion ──────────────────────────────────────────────────────────
 
 export const apiAutenticacion = {
