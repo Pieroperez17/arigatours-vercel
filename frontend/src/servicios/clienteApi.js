@@ -2,9 +2,8 @@
  * Cliente HTTP unico para hablar con el backend.
  *
  * Todas las llamadas usan rutas relativas ("/api/..."), nunca una direccion
- * completa. En desarrollo Vite las reenvia al puerto 4020; ya desplegado, la
- * web y la API comparten dominio en Vercel y las resuelve la funcion
- * serverless. El mismo build sirve en los dos sitios sin recompilar.
+ * completa. En desarrollo Vite las reenvia al puerto 4020 y en el VPS lo hace
+ * Nginx, asi que el mismo build funciona en los dos sitios sin recompilar.
  */
 
 const CLAVE_TOKEN = 'arigatours_token';
@@ -148,6 +147,12 @@ export const apiAutenticacion = {
     }),
 
   perfil: () => peticion('/autenticacion/perfil'),
+
+  cambiarClave: (claveActual, claveNueva) =>
+    peticion('/autenticacion/clave', {
+      method: 'PATCH',
+      body: JSON.stringify({ claveActual, claveNueva }),
+    }),
 };
 
 // ── Contacto ───────────────────────────────────────────────────────────────

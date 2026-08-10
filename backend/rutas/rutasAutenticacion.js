@@ -18,7 +18,21 @@ const limitadorIngreso = rateLimit({
   message: { error: 'Demasiados intentos de ingreso. Espera unos minutos.' },
 });
 
+/*
+ * El cambio de clave tambien se limita. Ya exige sesion, pero pide la clave
+ * actual: sin tope, una sesion robada permitiria adivinarla a fuerza bruta
+ * desde aqui, esquivando el limitador del ingreso.
+ */
+const limitadorCambioClave = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados intentos de cambio de clave. Espera unos minutos.' },
+});
+
 rutas.post('/ingresar', limitadorIngreso, controlador.ingresar);
 rutas.get('/perfil', verificarSesion, controlador.perfil);
+rutas.patch('/clave', verificarSesion, limitadorCambioClave, controlador.cambiarClave);
 
 export default rutas;

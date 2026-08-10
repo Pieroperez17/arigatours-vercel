@@ -23,6 +23,30 @@ export async function buscarPorId(id) {
   return rows[0] || null;
 }
 
+/** Busca un usuario por id incluyendo el hash, para poder comprobar su clave. */
+export async function buscarConClave(id) {
+  const { rows } = await consultar(
+    'SELECT id, correo, clave_hash, nombre, rol FROM usuarios WHERE id = $1 LIMIT 1',
+    [id]
+  );
+  return rows[0] || null;
+}
+
+/**
+ * Cambia la clave de un usuario y nada mas.
+ *
+ * Existe aparte de crearOActualizar porque aquella, al venir de la siembra,
+ * tambien reescribe el nombre y el rol: usarla para un cambio de clave
+ * pisaria esos campos de rebote.
+ */
+export async function cambiarClave(id, claveHash) {
+  const { rowCount } = await consultar(
+    'UPDATE usuarios SET clave_hash = $2 WHERE id = $1',
+    [id, claveHash]
+  );
+  return rowCount > 0;
+}
+
 /**
  * Crea un usuario o actualiza su clave si el correo ya existia.
  * Lo usa el script de siembra para dejar listo el admin inicial.

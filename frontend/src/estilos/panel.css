@@ -657,3 +657,24 @@
   font-size: 0.85rem;
   line-height: 1.45;
 }
+
+/* ── Mi cuenta ──────────────────────────────────────────────────────────────
+   El formulario de clave se estrecha a proposito: son tres campos cortos y a
+   todo el ancho del panel quedarian perdidos, con la etiqueta muy lejos de
+   donde se escribe. */
+.panel-formulario--estrecho {
+  max-width: 26rem;
+}
+
+.panel-nota {
+  margin: 0 0 1rem;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Avisos bajo un campo concreto (clave corta, repeticion que no coincide). */
+.panel-texto-error {
+  color: var(--rojo-precio);
+  font-weight: 600;
+}
