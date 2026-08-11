@@ -137,6 +137,21 @@ export const apiSocios = {
   eliminar: (id) => peticion(`/socios/${id}`, { method: 'DELETE' }),
 };
 
+// ── Portadas (fotos de fondo del carrusel y las cabeceras) ─────────────────
+
+export const apiPortadas = {
+  listar: () => peticion('/portadas'),
+
+  listarTodasAdmin: () => peticion('/portadas/admin/todas'),
+
+  crear: (formulario) => peticion('/portadas', { method: 'POST', body: formulario }),
+
+  cambiarActivo: (id, activo) =>
+    peticion(`/portadas/${id}`, { method: 'PATCH', body: JSON.stringify({ activo }) }),
+
+  eliminar: (id) => peticion(`/portadas/${id}`, { method: 'DELETE' }),
+};
+
 // ── Autenticacion ──────────────────────────────────────────────────────────
 
 export const apiAutenticacion = {

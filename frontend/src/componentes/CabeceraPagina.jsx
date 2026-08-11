@@ -4,13 +4,23 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { FOTOS_PORTADA, recurso } from '../configuracion/sitio.js';
+import { usarPortadas } from '../ganchos/usarPortadas.js';
 
 const SEGUNDOS_ENTRE_FOTOS = 6000;
 
 export default function CabeceraPagina({ titulo, subtitulo }) {
-  const fotos = useMemo(() => [...FOTOS_PORTADA].sort(() => Math.random() - 0.5), []);
+  const portadas = usarPortadas();
+
+  // Se barajan cuando cambia la lista, no en cada repintado.
+  const fotos = useMemo(() => [...portadas].sort(() => Math.random() - 0.5), [portadas]);
   const [indice, setIndice] = useState(0);
+
+  /*
+   * Si el administrador quita fotos, el indice puede quedar apuntando mas
+   * alla del final de la lista nueva y la cabecera se veria sin fondo. El
+   * resto (%) lo devuelve dentro del rango.
+   */
+  const fotoActual = fotos[indice % fotos.length];
 
   useEffect(() => {
     const temporizador = setInterval(
@@ -26,7 +36,7 @@ export default function CabeceraPagina({ titulo, subtitulo }) {
       className="cabecera-pagina"
       style={{
         backgroundImage:
-          `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${recurso(fotos[indice])}')`,
+          `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${fotoActual}')`,
       }}
     >
       <h1>{titulo}</h1>

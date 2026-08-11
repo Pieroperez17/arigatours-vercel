@@ -12,6 +12,7 @@
     "migrar": "node backend/scripts/migrarEsquema.js",
     "sembrar": "node backend/scripts/sembrarDatos.js",
     "sembrar:socios": "node backend/scripts/sembrarSocios.js",
+    "sembrar:portadas": "node backend/scripts/sembrarPortadas.js",
     "preparar": "npm run migrar && npm run sembrar"
   },
   "engines": {

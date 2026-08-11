@@ -678,3 +678,81 @@
   color: var(--rojo-precio);
   font-weight: 600;
 }
+
+/* ── Portadas ───────────────────────────────────────────────────────────────
+   Rejilla de miniaturas: al ser fotos de fondo, lo unico que importa al
+   revisarlas es verlas, no leer sus nombres de archivo. */
+.portadas-subida {
+  margin: 0 0 1.2rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.7rem;
+  background: var(--fondo);
+}
+
+.portadas-subida label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.portadas-subida-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.portadas-subida-fila input[type='file'] {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.portadas-subida small {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--texto-suave);
+  font-size: 0.83rem;
+}
+
+.portadas-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.9rem;
+}
+
+.portada-ficha {
+  margin: 0;
+  border: 1px solid var(--borde);
+  border-radius: 0.7rem;
+  overflow: hidden;
+  background: var(--blanco);
+  box-shadow: var(--sombra-suave);
+}
+
+/* Las ocultas se apagan en vez de esconderse: hay que poder recuperarlas. */
+.portada-ficha.inactiva img {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.portada-ficha img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+}
+
+.portada-ficha figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.portada-ficha-acciones {
+  display: flex;
+  gap: 0.35rem;
+}

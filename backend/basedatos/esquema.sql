@@ -123,3 +123,23 @@ CREATE TABLE IF NOT EXISTS socios (
 
 CREATE INDEX IF NOT EXISTS idx_socios_activo ON socios (activo);
 CREATE INDEX IF NOT EXISTS idx_socios_orden  ON socios (orden);
+
+
+-- ── Portadas: fotos de fondo del carrusel de inicio y de las cabeceras ─────
+-- Antes eran una lista fija en el codigo del frontend. Ahora viven aqui para
+-- poder cambiarlas desde el panel sin volver a desplegar.
+--
+-- "imagen" guarda la ruta publica ya lista para usar, no un nombre de
+-- archivo. Las que vienen de la semilla apuntan a los estaticos del repo
+-- ("/recursos/kioto.webp") y las que se suben desde el panel a Vercel Blob
+-- ("https://....public.blob.vercel-storage.com/..."). Guardando la ruta
+-- entera las dos conviven sin que nadie tenga que adivinar cual es cual.
+CREATE TABLE IF NOT EXISTS portadas (
+  id          SERIAL PRIMARY KEY,
+  imagen      TEXT        NOT NULL UNIQUE,
+  orden       INTEGER     NOT NULL DEFAULT 0,
+  activo      BOOLEAN     NOT NULL DEFAULT TRUE,
+  creado_en   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_portadas_activo ON portadas (activo, orden);

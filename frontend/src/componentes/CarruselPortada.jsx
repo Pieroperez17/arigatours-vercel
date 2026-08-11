@@ -10,7 +10,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
-import { FOTOS_PORTADA, recurso } from '../configuracion/sitio.js';
+import { usarPortadas } from '../ganchos/usarPortadas.js';
 
 const SEGUNDOS_ENTRE_DIAPOSITIVAS = 5000;
 
@@ -30,9 +30,18 @@ export default function CarruselPortada() {
   const { t } = usarIdioma();
   const [indiceActual, setIndiceActual] = useState(0);
 
-  // useMemo sin dependencias: las fotos se barajan una sola vez por visita,
-  // no en cada repintado.
-  const fotos = useMemo(() => barajar(FOTOS_PORTADA).slice(0, 3), []);
+  const portadas = usarPortadas();
+
+  /*
+   * Tres fotos, una por diapositiva, barajadas para que la portada no se vea
+   * siempre igual. Se recalculan cuando cambia la lista, no en cada
+   * repintado.
+   *
+   * Si el administrador deja menos de tres, slice devuelve las que haya y
+   * abajo se repite la primera para rellenar: es preferible ver una foto dos
+   * veces que una diapositiva sin fondo.
+   */
+  const fotos = useMemo(() => barajar(portadas).slice(0, 3), [portadas]);
 
   const diapositivas = useMemo(
     () => [
@@ -67,7 +76,7 @@ export default function CarruselPortada() {
           className={`portada-diapositiva${indice === indiceActual ? ' activa' : ''}`}
           style={{
             backgroundImage:
-              `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('${recurso(fotos[indice] || fotos[0])}')`,
+              `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('${fotos[indice] || fotos[0]}')`,
           }}
           aria-hidden={indice !== indiceActual}
         >
