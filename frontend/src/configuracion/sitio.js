@@ -8,12 +8,20 @@
 export const SITIO = {
   nombre: 'ArigaTours',
   lema: 'Descubre el auténtico Japón',
-  // Ojo con el nombre: el archivo es "ArigatoursLOGOv1" (sin guion bajo y con
-  // la t minuscula). Es la version con fondo transparente, la que encaja sobre
-  // el rosa de la barra. La alternativa con fondo solido es
-  // "ArigaTours_LOGOCONFONDO.webp".
-  logo: '/recursos/ArigaTours_LOGOCONFONDO.webp',
-  logo2: '/recursos/ArigatoursLOGOv1.webp',
+  /*
+   * El maneki-neko sobre el circulo rojo. Es un WebP de 512 px generado a
+   * partir de NewLogo.png, que se queda en la carpeta como original.
+   *
+   * Al PNG se le recorto el margen antes de convertirlo: dos tercios de la
+   * imagen eran transparencia, y eso hacia que el gato se viera diminuto
+   * dentro de su hueco en la barra de navegacion.
+   *
+   * Lleva fondo transparente, asi que sirve igual sobre el rosa de la barra
+   * que sobre el blanco de la pantalla de ingreso. Por eso ahora los dos
+   * campos apuntan al mismo archivo.
+   */
+  logo: '/recursos/logo-neko.webp',
+  logo2: '/recursos/logo-neko.webp',
 
   correo: 'contacto@arigatours.com',
 
