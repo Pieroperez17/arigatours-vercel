@@ -16,10 +16,16 @@ export const SITIO = {
   logo2: '/recursos/ArigatoursLOGOv1.webp',
 
   correo: 'contacto@arigatours.com',
-  telefono: '+81 70-6438-2066',
+
+  /*
+   * Se escribe "+81 70-..." y no "+81 070-...", que es como se marca dentro
+   * de Japon: al anteponer el prefijo del pais, el cero inicial del movil se
+   * cae. Dejandolo, wa.me recibiria 8107090975476 y no abriria ningun chat.
+   */
+  telefono: '+81 70-9097-5476',
 
   // Numero de WhatsApp en formato internacional, solo digitos.
-  whatsapp: '817064382066',
+  whatsapp: '817090975476',
 
   redes: {
     facebook: 'https://facebook.com/',
