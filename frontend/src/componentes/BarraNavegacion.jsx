@@ -74,6 +74,16 @@ export default function BarraNavegacion() {
               <NavLink to="/" className={claseEnlace} end>{t.navInicio}</NavLink>
             </li>
 
+            {/*
+              "Quienes somos" va aqui arriba, y no junto a "Contacto", para que
+              los cuatro apartados de catalogo (ciudades, tours privados, free
+              tours y blog) queden en un solo bloque seguido en vez de partidos
+              en dos.
+            */}
+            <li>
+              <NavLink to="/quienes-somos" className={claseEnlace}>{t.navQuienesSomos}</NavLink>
+            </li>
+
             {/* Ciudades: se arma con los datos reales de la base */}
             <li className={`desplegable${desplegableAbierto === 'ciudades' ? ' abierto' : ''}`}>
               <button
@@ -122,9 +132,6 @@ export default function BarraNavegacion() {
             </li>
             <li>
               <NavLink to="/blogs" className={claseEnlace}>{t.navBlogs}</NavLink>
-            </li>
-            <li>
-              <NavLink to="/quienes-somos" className={claseEnlace}>{t.navQuienesSomos}</NavLink>
             </li>
             <li>
               <NavLink to="/contacto" className={claseEnlace}>{t.navContacto}</NavLink>
