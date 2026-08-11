@@ -1720,8 +1720,21 @@ button {
 
 .pie-columna { flex: 1; min-width: 240px; }
 
+/*
+ * Los titulos del pie llevan un rojo mas vivo que el granate de la marca.
+ * Sobre el fondo oscuro del pie, --rojo (#8e1b2e) se hunde: queda en 1.41:1
+ * de contraste, practicamente ilegible.
+ *
+ * Este sube a 1.95:1, que se lee mejor pero sigue lejos del 4.5:1 que pide
+ * la norma. Y aplica ese umbral, no el 3:1 de texto grande: son 20 px en
+ * peso 400, y para contar como grande harian falta 24 px o negrita.
+ *
+ * Se deja asi porque es una decision de marca tomada a proposito, no un
+ * descuido. Si algun dia prima la legibilidad, #ff6b6b llega a 4.5:1 sobre
+ * este mismo fondo sin dejar de ser rojo.
+ */
 .pie-columna h4 {
-  color: var(--rojo);
+  color: #bf0125;
   margin-bottom: 1.4rem;
   font-size: 1.25rem;
 }
