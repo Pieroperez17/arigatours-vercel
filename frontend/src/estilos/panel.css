@@ -756,3 +756,205 @@
   display: flex;
   gap: 0.35rem;
 }
+
+/* ── Selector visual de fotos ───────────────────────────────────────────────
+   Sustituye a los campos donde habia que escribir rutas de archivo. Se ven
+   las fotos, se anaden con un boton y se quitan con la equis de la esquina. */
+.selector-fotos {
+  margin-bottom: 1.4rem;
+}
+
+.selector-fotos-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.selector-fotos-etiqueta {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--texto);
+}
+
+/* Estado vacio: una zona grande y evidente donde pulsar. */
+.selector-fotos-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 8rem;
+  padding: 1rem;
+  border: 2px dashed var(--borde);
+  border-radius: 0.7rem;
+  background: var(--fondo);
+  color: var(--texto-suave);
+  font-family: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.selector-fotos-vacio:hover {
+  border-color: var(--rojo);
+  color: var(--rojo);
+}
+
+.selector-fotos-vacio i { font-size: 1.6rem; }
+
+.selector-fotos-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.6rem;
+}
+
+/* La portada es una sola foto, y se muestra mas grande que las de galeria. */
+.selector-fotos-rejilla.unica {
+  grid-template-columns: minmax(0, 15rem) auto;
+  align-items: start;
+}
+
+.selector-foto {
+  position: relative;
+  margin: 0;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+}
+
+.selector-foto img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+/* Las que aun no se han subido se marcan: hasta guardar no existen. */
+.selector-foto.pendiente {
+  border-color: var(--rojo);
+}
+
+.selector-foto-aviso {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0.15rem 0.45rem;
+  background: var(--rojo);
+  color: var(--blanco);
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-top-right-radius: 0.4rem;
+}
+
+.selector-foto-quitar {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--blanco);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.18s ease;
+}
+
+.selector-foto-quitar:hover {
+  background: var(--rojo-precio);
+}
+
+.selector-foto-anadir {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 5rem;
+  padding: 0.8rem;
+  border: 2px dashed var(--borde);
+  border-radius: 0.6rem;
+  background: var(--fondo);
+  color: var(--texto-suave);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.selector-fotos-rejilla.unica .selector-foto-anadir {
+  align-self: stretch;
+  min-width: 7rem;
+}
+
+.selector-foto-anadir:hover {
+  border-color: var(--rojo);
+  color: var(--rojo);
+}
+
+.selector-fotos-ayuda {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--texto-suave);
+  font-size: 0.83rem;
+}
+
+/* Pegar una direccion: se ofrece como enlace discreto, no como campo. */
+.selector-fotos-enlace {
+  margin-top: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--texto-suave);
+  font-family: inherit;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.selector-fotos-enlace:hover { color: var(--rojo); }
+
+.selector-fotos-direccion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.selector-fotos-direccion input {
+  flex: 1 1 16rem;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+
+/* ── Fechas disponibles ─────────────────────────────────────────────────── */
+.lista-fechas {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.lista-fechas-fila {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lista-fechas-fila input {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+}

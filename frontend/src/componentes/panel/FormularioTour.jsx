@@ -12,6 +12,7 @@
 import { useState, useEffect } from 'react';
 import { apiTours } from '../../servicios/clienteApi.js';
 import { IDIOMAS } from '../../traducciones/textos.js';
+import SelectorFotos from './SelectorFotos.jsx';
 
 /** Estructura vacia de una traduccion. */
 const TRADUCCION_VACIA = {
@@ -97,7 +98,12 @@ export default function FormularioTour({ tourAEditar, alGuardar, alCancelar }) {
       datos.append('duracion', comunes.duracion);
       datos.append('imagen', comunes.imagen);
       datos.append('galeria', aLineas(comunes.galeria));
-      datos.append('fechasDisponibles', aLineas(comunes.fechasDisponibles));
+      /*
+       * Se descartan las fechas en blanco: al pulsar "Añadir una fecha" se
+       * crea una fila vacia, y si el usuario se arrepiente y guarda sin
+       * rellenarla, esa fila llegaria como una fecha sin valor.
+       */
+      datos.append('fechasDisponibles', aLineas(comunes.fechasDisponibles.filter(Boolean)));
       datos.append('orden', String(comunes.orden));
       datos.append('activo', String(comunes.activo));
 
@@ -211,52 +217,71 @@ export default function FormularioTour({ tourAEditar, alGuardar, alCancelar }) {
       <fieldset className="panel-grupo">
         <legend>Imágenes</legend>
 
-        <div className="panel-campo">
-          <label htmlFor="tour-imagen">Portada (dirección)</label>
-          <input
-            id="tour-imagen" type="text"
-            value={comunes.imagen}
-            onChange={(evento) => cambiarComun('imagen', evento.target.value)}
-            placeholder="/recursos/Kioto_1.webp"
-          />
-        </div>
+        <SelectorFotos
+          etiqueta="Portada"
+          ayuda="Es la foto que se ve en la tarjeta del tour y en su cabecera."
+          direcciones={comunes.imagen ? [comunes.imagen] : []}
+          alCambiarDirecciones={(lista) => cambiarComun('imagen', lista[0] || '')}
+          archivos={archivoPortada ? [archivoPortada] : []}
+          alCambiarArchivos={(lista) => setArchivoPortada(lista[0] || null)}
+        />
 
-        <div className="panel-campo">
-          <label htmlFor="tour-archivo-portada">…o subir una imagen de portada</label>
-          <input
-            id="tour-archivo-portada" type="file" accept="image/*"
-            onChange={(evento) => setArchivoPortada(evento.target.files[0] || null)}
-          />
-          {archivoPortada && <small>Se subirá: {archivoPortada.name}</small>}
-        </div>
+        <SelectorFotos
+          etiqueta="Galería"
+          ayuda="Las fotos que se ven al abrir el tour. Se muestran en este orden."
+          multiple
+          direcciones={comunes.galeria}
+          alCambiarDirecciones={(lista) => cambiarComun('galeria', lista)}
+          archivos={archivosGaleria}
+          alCambiarArchivos={setArchivosGaleria}
+        />
 
+        {/*
+          Cada fecha con su propio calendario, en vez de un cuadro de texto
+          donde habia que escribirlas en formato AAAA-MM-DD. Ese formato se
+          escribe mal con facilidad y el error no se ve hasta que la fecha
+          desaparece de la web.
+        */}
         <div className="panel-campo">
-          <label htmlFor="tour-galeria">Galería (una dirección por línea)</label>
-          <textarea
-            id="tour-galeria" rows="4"
-            value={aLineas(comunes.galeria)}
-            onChange={(evento) => cambiarComun('galeria', aLista(evento.target.value))}
-            placeholder={'/recursos/Kioto_1.webp\n/recursos/Kioto_2.webp'}
-          />
-        </div>
+          <span className="selector-fotos-etiqueta">Fechas disponibles</span>
 
-        <div className="panel-campo">
-          <label htmlFor="tour-archivos-galeria">…o subir varias fotos a la galería</label>
-          <input
-            id="tour-archivos-galeria" type="file" accept="image/*" multiple
-            onChange={(evento) => setArchivosGaleria([...evento.target.files])}
-          />
-          {archivosGaleria.length > 0 && <small>{archivosGaleria.length} archivo(s) por subir</small>}
-        </div>
+          <div className="lista-fechas">
+            {comunes.fechasDisponibles.map((fecha, indice) => (
+              <div key={indice} className="lista-fechas-fila">
+                <input
+                  type="date"
+                  value={fecha}
+                  onChange={(evento) => {
+                    const copia = [...comunes.fechasDisponibles];
+                    copia[indice] = evento.target.value;
+                    cambiarComun('fechasDisponibles', copia);
+                  }}
+                />
+                <button
+                  type="button"
+                  className="panel-boton-icono peligro"
+                  onClick={() => cambiarComun(
+                    'fechasDisponibles',
+                    comunes.fechasDisponibles.filter((_, i) => i !== indice),
+                  )}
+                  aria-label="Quitar esta fecha"
+                  title="Quitar"
+                >
+                  <i className="fas fa-xmark" />
+                </button>
+              </div>
+            ))}
 
-        <div className="panel-campo">
-          <label htmlFor="tour-fechas">Fechas disponibles (una por línea, AAAA-MM-DD)</label>
-          <textarea
-            id="tour-fechas" rows="3"
-            value={aLineas(comunes.fechasDisponibles)}
-            onChange={(evento) => cambiarComun('fechasDisponibles', aLista(evento.target.value))}
-            placeholder={'2026-09-15\n2026-09-22'}
-          />
+            <button
+              type="button"
+              className="boton-suave"
+              onClick={() => cambiarComun('fechasDisponibles', [...comunes.fechasDisponibles, ''])}
+            >
+              <i className="fas fa-plus" /> Añadir una fecha
+            </button>
+          </div>
+
+          <small>Déjalo vacío si el tour se hace bajo pedido, sin fechas fijas.</small>
         </div>
       </fieldset>
 
