@@ -2369,18 +2369,43 @@ button {
   color: var(--rojo);
 }
 
-.rejilla-resenas {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+/*
+ * La cinta se sale del ancho maximo a proposito: las tarjetas tienen que
+ * entrar y salir por el borde de la pantalla, no por el de una caja centrada.
+ * Las mascaras de los lados las desvanecen en lugar de cortarlas en seco.
+ */
+.cinta-resenas {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.cinta-resenas-pista {
+  display: flex;
   gap: 1.4rem;
-  max-width: 1400px;
-  margin-inline: auto;
+  width: max-content;
+  /* 9s por resena mantiene el ritmo igual haya cinco o quince. */
+  animation: desfile-resenas calc(var(--total-resenas) * 9s) linear infinite;
+}
+
+.cinta-resenas:hover .cinta-resenas-pista { animation-play-state: paused; }
+
+@keyframes desfile-resenas {
+  from { transform: translateX(0); }
+  /* La mitad del recorrido es justo el primer bloque de tarjetas. */
+  to { transform: translateX(calc(-50% - 0.7rem)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinta-resenas { overflow-x: auto; }
+  .cinta-resenas-pista { animation: none; }
 }
 
 .resena {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+  flex: 0 0 clamp(260px, 25vw, 330px);
   margin: 0;
   padding: 1.6rem 1.5rem;
   border-radius: 1rem;

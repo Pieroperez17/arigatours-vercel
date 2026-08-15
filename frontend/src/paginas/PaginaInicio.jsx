@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import CarruselPortada from '../componentes/CarruselPortada.jsx';
 import CarruselHorizontal from '../componentes/CarruselHorizontal.jsx';
+import CarruselResenas from '../componentes/CarruselResenas.jsx';
 import { Cargando, ErrorCarga } from '../componentes/Estado.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { usarTours, usarBlogs } from '../ganchos/usarPeticion.js';
@@ -144,30 +145,11 @@ function SeccionResenas() {
   const { t } = usarIdioma();
 
   return (
-    <section className="seccion-resenas">
-      <div className="encabezado-seccion">
-        <span className="carrusel-entradilla">{t.resenasEntradilla}</span>
-        <h2>{t.resenasTitulo}</h2>
-      </div>
-
-      <div className="rejilla-resenas">
-        {RESENAS.map((resena) => (
-          <figure key={resena.id} className="resena">
-            {/* Las estrellas son decoracion: el dato real va en el aria-label */}
-            <div className="resena-estrellas" aria-label={`${resena.estrellas} de 5`}>
-              <span aria-hidden="true">{'★'.repeat(resena.estrellas)}</span>
-            </div>
-
-            <blockquote>{resena.texto}</blockquote>
-
-            <figcaption>
-              <strong>{resena.autor}</strong>
-              <span>{resena.lugar}</span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
+    <CarruselResenas
+      entradilla={t.resenasEntradilla}
+      titulo={t.resenasTitulo}
+      resenas={RESENAS}
+    />
   );
 }
 
