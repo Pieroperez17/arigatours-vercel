@@ -89,6 +89,17 @@ export const TEXTOS = {
 
     // ── Blogs ──
     blogsTitulo: 'Experiencias de viajeros',
+
+    // ── Secciones nuevas del inicio ──
+    ciudadesEntradilla: 'Una selección personal',
+    ciudadesTitulo: 'Viajes que permanecen contigo',
+    ciudadesTours: 'experiencias',
+    resenasEntradilla: 'Lo que permanece después del viaje',
+    resenasTitulo: 'Lo que dicen nuestros viajeros',
+    diarioEntradilla: 'Nuestro diario de viaje',
+    diarioTitulo: 'Historias para empezar a viajar',
+    verTodos: 'Ver todos',
+    leerArticulo: 'Leer artículo',
     blogsSubtitulo: 'Historias, consejos y novedades desde Japón.',
     buscarArticulos: 'Buscar artículos…',
     todasCategorias: 'Todas las categorías',
@@ -203,6 +214,16 @@ export const TEXTOS = {
     imagenSiguiente: 'Next image',
 
     blogsTitulo: 'Traveler experiences',
+
+    ciudadesEntradilla: 'A personal selection',
+    ciudadesTitulo: 'Journeys that stay with you',
+    ciudadesTours: 'experiences',
+    resenasEntradilla: 'What remains after the trip',
+    resenasTitulo: 'What our travelers say',
+    diarioEntradilla: 'Our travel diary',
+    diarioTitulo: 'Stories to start travelling',
+    verTodos: 'See all',
+    leerArticulo: 'Read article',
     blogsSubtitulo: 'Stories, tips and news from Japan.',
     buscarArticulos: 'Search articles…',
     todasCategorias: 'All categories',
@@ -313,6 +334,16 @@ export const TEXTOS = {
     imagenSiguiente: '次の画像',
 
     blogsTitulo: '旅行者の体験',
+
+    ciudadesEntradilla: '厳選された旅',
+    ciudadesTitulo: '心に残る旅へ',
+    ciudadesTours: '件の体験',
+    resenasEntradilla: '旅のあとに残るもの',
+    resenasTitulo: 'お客様の声',
+    diarioEntradilla: '旅の日記',
+    diarioTitulo: '旅のはじまりの物語',
+    verTodos: 'すべて見る',
+    leerArticulo: '記事を読む',
     blogsSubtitulo: '日本からの物語、アドバイス、最新情報。',
     buscarArticulos: '記事を検索…',
     todasCategorias: 'すべてのカテゴリー',
