@@ -13,27 +13,43 @@
 
 export const RESENAS = [
   {
-    id: 'maria-es',
+    id: 'rommy-al',
     texto:
-      'Nuestro viaje con ArigaTours fue simplemente increíble. Cada detalle estuvo pensado para nosotros. Sentimos que descubrimos el Japón más auténtico.',
-    autor: 'María',
-    lugar: 'España',
+      'Recomendaría al 100% hacer Tour con ArigaTours, son chicos que conocen muy bien Kobe y alrededores. Tuve también Tour privados con ellos a Nara, Uji, Kyoto, encantadisima, bellos lugares. Saludos desde Frankfurt, Alemania',
+    autor: 'Rommy',
+    lugar: 'Alemania',
     estrellas: 5,
   },
   {
-    id: 'andres-mx',
+    id: 'zully-us',
     texto:
-      'Las guías son excepcionales. No solo conocen Japón, lo viven y lo transmiten con una cercanía que convierte el viaje en algo memorable.',
-    autor: 'Andrés',
-    lugar: 'México',
+      'I got to see a little bit of everything, and the information was very interesting and helpful. It was a great experience overall, and I highly recommend it!',
+    autor: 'Zully',
+    lugar: '',
     estrellas: 5,
   },
   {
-    id: 'lucia-pe',
+    id: 'fabian-none',
     texto:
-      'Organizaron todo a nuestro ritmo, sin prisas y sin grupos enormes. Volvimos con la sensación de haber entendido el país, no solo de haberlo visitado.',
-    autor: 'Lucía',
-    lugar: 'Perú',
+      'Muy lindo el tour bastante entretenido, gracias por tan buena experiencia',
+    autor: 'Fabian',
+    lugar: '',
+    estrellas: 5,
+  },
+  {
+    id: 'genesis-none',
+    texto:
+      'Un tour que vale la pena agendar! Experiencia inolvidable, incluso me enseñaron lugares que no he visto en redes sociales. Además, el guía fue muy amable y tenía mucho conocimiento sobre la ciudad.',
+    autor: 'Genesis',
+    lugar: '',
+    estrellas: 5,
+  },
+  {
+    id: 'martin-none',
+    texto:
+      'Ha sido sorprendente, hemos conocido todo de Kobe en un recorrido, tal cual el titulo. Lo súper recomiendo.',
+    autor: 'Martin',
+    lugar: '',
     estrellas: 5,
   },
 ];
