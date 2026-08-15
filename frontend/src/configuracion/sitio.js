@@ -20,7 +20,20 @@ export const SITIO = {
    * que sobre el blanco de la pantalla de ingreso. Por eso ahora los dos
    * campos apuntan al mismo archivo.
    */
-  logo: '/recursos/logo-neko.webp',
+  /*
+   * Dos versiones del logo, y cada una tiene su sitio:
+   *
+   *   logo  → el horizontal, con el gato y la palabra "ArigaTours". Va en la
+   *           barra de navegacion, donde hay ancho de sobra y conviene que
+   *           se lea el nombre.
+   *   logo2 → solo el gato. Se usa donde el espacio es cuadrado, como la
+   *           pantalla de ingreso al panel, donde el horizontal quedaria
+   *           diminuto para caber a lo ancho.
+   *
+   * El horizontal es SVG: al ser trazos y no pixeles, se ve nitido en
+   * cualquier pantalla y pesa menos que una imagen equivalente.
+   */
+  logo: '/recursos/logo-horizontal.svg',
   logo2: '/recursos/logo-neko.webp',
 
   correo: 'contacto@arigatours.com',

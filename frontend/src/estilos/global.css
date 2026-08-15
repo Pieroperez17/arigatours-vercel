@@ -601,122 +601,114 @@ button {
   font-size: 1.1rem;
 }
 
+/*
+ * Tarjetas destacadas: pequenas y sin adornos.
+ *
+ * Antes eran fichas grandes con descripcion, una tabla de temperaturas por
+ * estacion y un boton. Ocupaban casi una pantalla cada dos, y repetian peor
+ * lo que ya cuenta la ficha del tour. Ahora se quedan con lo que sirve para
+ * comparar de un vistazo: foto, ciudad, titulo, duracion y precio.
+ *
+ * minmax de 220 px: caben cuatro por fila en escritorio, y bajan solas a
+ * tres, dos o una segun el ancho, sin necesidad de puntos de corte.
+ */
 .rejilla-destacados {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.4rem;
 }
 
+/* La tarjeta entera es el enlace: no hace falta apuntar a un boton. */
 .tarjeta-destacada {
-  background: var(--blanco);
-  border-radius: 15px;
-  box-shadow: var(--sombra-suave);
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  box-shadow: var(--sombra-suave);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .tarjeta-destacada:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
   box-shadow: var(--sombra-media);
 }
 
 .tarjeta-destacada-imagen {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
 }
 
 .tarjeta-destacada-imagen img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
+  display: block;
   transition: transform 0.5s ease;
 }
 
 .tarjeta-destacada:hover .tarjeta-destacada-imagen img {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .etiqueta-ciudad {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  background: var(--rojo);
+  top: 0.6rem;
+  left: 0.6rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(var(--rojo-rgb), 0.92);
   color: var(--blanco);
-  padding: 7px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .tarjeta-destacada-cuerpo {
-  padding: 1.5rem 1.8rem 1.8rem;
   display: flex;
   flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.85rem 0.9rem 1rem;
   flex: 1;
 }
 
-.tarjeta-destacada-titulo {
+/*
+ * El titulo se recorta a dos lineas. Los hay muy largos ("Tokio, las Luces y
+ * Sombras (Free Walking Tour) (Variable)") y sin tope descuadrarian la fila
+ * entera, dejando unas tarjetas mucho mas altas que otras.
+ */
+.tarjeta-destacada-cuerpo h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--rojo);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tarjeta-destacada-datos {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.tarjeta-destacada-titulo h3 {
-  font-size: 1.45rem;
-  color: #333;
-  line-height: 1.2;
-}
-
-/* Tambien es un precio: mismo rojo vivo que en la ficha del tour. */
-.tarjeta-destacada-titulo span {
-  font-weight: bold;
-  color: var(--rojo-precio);
-  font-size: 1.2rem;
-}
-
-.tarjeta-destacada-resumen {
-  color: var(--texto-suave);
-  font-size: 0.98rem;
-  line-height: 1.6;
-  margin-bottom: 15px;
-}
-
-.rejilla-clima {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.rejilla-clima div {
-  background: #f4f4f4;
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-}
-
-.tarjeta-destacada-pie {
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
   margin-top: auto;
-  padding-top: 18px;
-  text-align: right;
+  padding-top: 0.5rem;
+  color: var(--texto-suave);
+  font-size: 0.82rem;
 }
 
-/* El boton de la tarjeta va algo mas compacto que el estandar, pero
-   conserva el mismo radio para no romper la coherencia visual. */
-.tarjeta-destacada-pie .boton-primario {
-  padding: 0.6rem 1.25rem;
-  font-size: 0.92rem;
+.tarjeta-destacada-precio {
+  color: var(--rojo-precio);
+  font-weight: 700;
+  text-align: right;
 }
 
 /* =========================================
@@ -1908,7 +1900,19 @@ button {
 @media (max-width: 768px) {
   .encabezado-seccion h2 { font-size: 1.9rem; }
   .cabecera-pagina h1 { font-size: 2.1rem; }
+  /*
+   * En movil, una tarjeta por fila. Con dos quedaban a 158 px de ancho: el
+   * titulo se partia en cuatro trozos, la duracion y el precio se apilaban
+   * uno encima de otro y todo se veia aplastado. A ancho completo cada dato
+   * cabe en su linea.
+   */
   .rejilla-destacados { grid-template-columns: 1fr; }
+
+  /*
+   * Y la foto mas apaisada. A ancho completo, un 4:3 se come casi media
+   * pantalla de alto y obliga a desplazarse mucho para ver las cuatro.
+   */
+  .tarjeta-destacada-imagen img { aspect-ratio: 16 / 9; }
   .filtros { flex-direction: column; align-items: stretch; }
   .filtros select, .filtros input { min-width: 0; width: 100%; }
   .galeria { height: 260px; }
@@ -1930,7 +1934,6 @@ button {
 
 @media (max-width: 480px) {
   .tarjeta-tour { width: calc(52vw - 1.5rem); min-width: 140px; }
-  .rejilla-clima { grid-template-columns: 1fr; }
 }
 
 /* Respeta la preferencia de quien pide menos animaciones */
@@ -2126,3 +2129,286 @@ button {
   margin-bottom: 1.6rem;
   color: var(--texto-suave);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Carrusel horizontal reutilizable (ciudades y diario del inicio)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.carrusel-seccion {
+  padding: 4rem 5% 3rem;
+  max-width: 1400px;
+  margin-inline: auto;
+}
+
+.carrusel-cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
+}
+
+/* Rotulo pequeno sobre el titulo, en mayusculas y con una raya al lado. */
+.carrusel-entradilla {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+  color: var(--rojo-precio);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.carrusel-entradilla::before {
+  content: '';
+  width: 2rem;
+  height: 2px;
+  background: var(--rojo-precio);
+}
+
+.carrusel-cabecera h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  color: var(--rojo);
+}
+
+.carrusel-enlace {
+  color: var(--rojo);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.carrusel-enlace:hover { text-decoration: underline; }
+
+.carrusel-marco { position: relative; }
+
+/*
+ * scroll-snap para que las tarjetas queden alineadas al parar, y no a medio
+ * cortar. Las barras se ocultan porque ya hay flechas y arrastre.
+ */
+.carrusel-pista {
+  display: flex;
+  gap: 1.1rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  padding-bottom: 0.5rem;
+}
+
+.carrusel-pista::-webkit-scrollbar { display: none; }
+.carrusel-pista.arrastrando { cursor: grabbing; scroll-snap-type: none; }
+.carrusel-pista > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+.carrusel-flecha {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 2.8rem;
+  height: 2.8rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  background: var(--blanco);
+  color: var(--rojo);
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--sombra-media);
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.carrusel-flecha:hover { background: var(--rojo); color: var(--blanco); }
+.carrusel-flecha.izquierda { left: -0.8rem; }
+.carrusel-flecha.derecha { right: -0.8rem; }
+
+/* Se esconde en vez de desaparecer, para que no salte el ancho al llegar
+   a un extremo. */
+.carrusel-flecha.oculta { opacity: 0; pointer-events: none; }
+
+@media (max-width: 700px) {
+  .carrusel-flecha { display: none; }
+}
+
+/* ── Tarjeta de ciudad ───────────────────────────────────────────────────── */
+.tarjeta-ciudad {
+  width: 17rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.tarjeta-ciudad-foto {
+  border-radius: 0.9rem;
+  overflow: hidden;
+  box-shadow: var(--sombra-suave);
+}
+
+.tarjeta-ciudad img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.tarjeta-ciudad:hover img { transform: scale(1.05); }
+
+.tarjeta-ciudad-pie {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.8rem 0.2rem 0;
+}
+
+.tarjeta-ciudad-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.15rem;
+  color: var(--rojo);
+}
+
+.tarjeta-ciudad-total {
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+
+/* ── Tarjeta del diario (blog) ───────────────────────────────────────────── */
+.tarjeta-diario {
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--borde);
+  border-radius: 0.9rem;
+  overflow: hidden;
+  background: var(--blanco);
+  box-shadow: var(--sombra-suave);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tarjeta-diario:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-media);
+}
+
+.tarjeta-diario-foto img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+}
+
+.tarjeta-diario-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem 1.2rem;
+}
+
+.tarjeta-diario-categoria {
+  align-self: flex-start;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--rosa-claro);
+  color: var(--rojo);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tarjeta-diario-cuerpo h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--rojo);
+}
+
+/* El resumen se recorta a tres lineas para que todas las tarjetas midan
+   igual sin depender de lo larga que sea cada entradilla. */
+.tarjeta-diario-cuerpo p {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tarjeta-diario-enlace {
+  margin-top: 0.2rem;
+  color: var(--rojo-precio);
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Reseñas de viajeros
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.seccion-resenas {
+  padding: 4rem 5%;
+  background: linear-gradient(180deg, #fff8f6 0%, #fde9ec 100%);
+}
+
+.seccion-resenas .encabezado-seccion {
+  max-width: 1400px;
+  margin-inline: auto;
+  margin-bottom: 2.2rem;
+}
+
+.seccion-resenas h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  color: var(--rojo);
+}
+
+.rejilla-resenas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+  max-width: 1400px;
+  margin-inline: auto;
+}
+
+.resena {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 1.6rem 1.5rem;
+  border-radius: 1rem;
+  background: var(--blanco);
+  box-shadow: var(--sombra-suave);
+}
+
+.resena-estrellas {
+  color: var(--rojo-precio);
+  font-size: 1.05rem;
+  letter-spacing: 0.15em;
+}
+
+.resena blockquote {
+  margin: 0;
+  color: var(--texto);
+  font-size: 0.97rem;
+  line-height: 1.65;
+}
+
+.resena figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--borde);
+}
+
+.resena figcaption strong { color: var(--rojo); }
+.resena figcaption span { color: var(--texto-suave); font-size: 0.87rem; }
