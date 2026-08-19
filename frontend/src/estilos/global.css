@@ -1673,13 +1673,15 @@ button {
 /* =========================================
    11. QUIENES SOMOS
    ========================================= */
+/*
+ * El texto va suelto sobre el fondo de la pagina, sin tarjeta blanca ni
+ * sombra que lo enmarque. Lo unico que lo sostiene es el ancho maximo: una
+ * linea de mas de unos 90 caracteres se lee mal, y sin caja el ancho es lo
+ * unico que impide que los parrafos crucen la pantalla entera.
+ */
 .texto-largo {
   max-width: 850px;
   margin: 0 auto;
-  background: var(--blanco);
-  padding: 3rem;
-  border-radius: 14px;
-  box-shadow: var(--sombra-suave);
 }
 
 .texto-largo p {
@@ -1689,7 +1691,43 @@ button {
   margin-bottom: 1.4rem;
 }
 
-.texto-largo p:last-child { margin-bottom: 0; }
+/* Cada parrafo va envuelto en un div junto a su foto, asi que el ultimo
+   parrafo ya no es el ultimo hijo directo del contenedor. */
+.texto-largo > :last-child p:last-child { margin-bottom: 0; }
+
+/*
+ * Fotos intercaladas entre los parrafos, alineadas al mismo ancho que el
+ * texto. Conservan la sombra propia: sin ella, y sin caja alrededor, una
+ * foto clara acabaria difuminandose contra el fondo crema.
+ */
+.foto-relato {
+  margin: 2.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--sombra-media);
+}
+
+.foto-relato img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+  transition: transform 0.6s ease;
+}
+
+.foto-relato:hover img { transform: scale(1.04); }
+
+/* Las dos verticales van emparejadas en una misma fila. */
+.foto-relato-pareja {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.foto-relato-pareja .foto-relato { margin: 0; }
+.foto-relato-pareja .foto-relato img { aspect-ratio: 3 / 4; }
 
 /* =========================================
    12. PIE DE PAGINA
@@ -1919,7 +1957,9 @@ button {
   .zona-detalle { padding: 1.25rem; }
   .detalle-tour { padding: 1.25rem; }
   .articulo { padding: 1.5rem; }
-  .texto-largo { padding: 1.75rem; }
+  /* En una columna estrecha, dos verticales lado a lado dejan las caras
+     del grupo del tamano de un sello. Apiladas se siguen reconociendo. */
+  .foto-relato-pareja { grid-template-columns: 1fr; gap: 1.25rem; }
   .portada-flecha { display: none; }
   .contacto-columnas { flex-direction: column; gap: 2.5rem; }
   .contacto-info h2 { font-size: 2rem; }
