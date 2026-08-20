@@ -1707,27 +1707,40 @@ button {
   box-shadow: var(--sombra-media);
 }
 
+/* Sin proporcion impuesta: una foto sola se muestra entera, con la forma
+   con la que se tomo. Recortarla a 16/9 se comia cabezas en las verticales
+   y el techo del mercado en la panoramica del selfie. */
 .foto-relato img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  aspect-ratio: 16 / 9;
+  height: auto;
   transition: transform 0.6s ease;
 }
 
 .foto-relato:hover img { transform: scale(1.04); }
 
-/* Las dos verticales van emparejadas en una misma fila. */
-.foto-relato-pareja {
+/*
+ * Fotos que comparten fila. Las columnas se generan solas (auto-flow), asi
+ * que la misma regla vale para dos o para tres sin tocar el CSS al anadir
+ * una foto mas al bloque.
+ */
+.foto-relato-grupo {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   gap: 1rem;
   margin: 2.5rem 0;
 }
 
-.foto-relato-pareja .foto-relato { margin: 0; }
-.foto-relato-pareja .foto-relato img { aspect-ratio: 3 / 4; }
+.foto-relato-grupo .foto-relato { margin: 0; }
+
+/* Aqui si conviene igualar la proporcion: en una misma fila, alturas
+   distintas dejan huecos bajo las fotos mas cortas. */
+.foto-relato-grupo .foto-relato img {
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+}
 
 /* =========================================
    12. PIE DE PAGINA
@@ -1957,9 +1970,9 @@ button {
   .zona-detalle { padding: 1.25rem; }
   .detalle-tour { padding: 1.25rem; }
   .articulo { padding: 1.5rem; }
-  /* En una columna estrecha, dos verticales lado a lado dejan las caras
-     del grupo del tamano de un sello. Apiladas se siguen reconociendo. */
-  .foto-relato-pareja { grid-template-columns: 1fr; gap: 1.25rem; }
+  /* En una columna estrecha, dos o tres verticales lado a lado dejan las
+     caras del tamano de un sello. Apiladas se siguen reconociendo. */
+  .foto-relato-grupo { grid-auto-flow: row; gap: 1.25rem; }
   .portada-flecha { display: none; }
   .contacto-columnas { flex-direction: column; gap: 2.5rem; }
   .contacto-info h2 { font-size: 2rem; }
