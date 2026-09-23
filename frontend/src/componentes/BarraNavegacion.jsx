@@ -1,59 +1,59 @@
 /**
- * Cabecera fija, blanca y translucida.
+ * Cabecera con el logo al centro y todo el menu detras de un boton.
  *
- * En escritorio el menu de destinos se abre al pasar el raton (solo CSS).
- * Por debajo de 1180 px la navegacion se pliega en un panel que cae bajo la
- * barra, y ahi los destinos se abren con un boton, como acordeon.
+ * En la portada del inicio va transparente, sobre la foto, con el logo en
+ * blanco; en cuanto se baja un poco (o en cualquier otra pagina) pasa a
+ * barra blanca. El boton "Menu" abre una capa a pantalla completa con los
+ * enlaces grandes y numerados, las ciudades (que salen de la base) y una
+ * foto de portada que cambia segun el enlace sobre el que se pasa.
  *
- * La lista de ciudades NO esta escrita a mano: se pide a /api/tours/ciudades,
- * asi que cuando se agrega un tour de una ciudad nueva, el menu se actualiza
- * solo sin tocar el codigo.
+ * La capa se cierra con Escape, con el propio boton o al navegar. Mientras
+ * esta abierta el fondo no se desplaza y el foco se queda dentro.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
-import { usarSesion } from '../contexto/ContextoSesion.jsx';
 import { usarCiudades } from '../ganchos/usarPeticion.js';
+import { usarPortadas } from '../ganchos/usarPortadas.js';
 import { IDIOMAS } from '../traducciones/textos.js';
 import { SITIO, enlaceWhatsapp } from '../configuracion/sitio.js';
-import { IconoMenu, IconoCruz, IconoUsuario } from './Iconos.jsx';
-
-// Debe coincidir con el punto de corte de ".menu" en global.css.
-const ANCHO_PLEGADO = 1180;
+import { IconoFacebook, IconoInstagram, IconoTiktok, IconoUsuario } from './Iconos.jsx';
 
 export default function BarraNavegacion() {
   const { idioma, cambiarIdioma, t } = usarIdioma();
-  const { usuario } = usarSesion();
   const { ciudades } = usarCiudades(idioma);
-  const ubicacion = useLocation();
+  const portadas = usarPortadas();
+  const { pathname, search } = useLocation();
 
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [destinosAbiertos, setDestinosAbiertos] = useState(false);
   const [desplazado, setDesplazado] = useState(false);
+  const [fotoMenu, setFotoMenu] = useState(0);
 
-  // Al navegar a otra pagina el menu movil se cierra solo.
+  const primerEnlace = useRef(null);
+  const botonMenu = useRef(null);
+
+  const enInicio = pathname === '/';
+  const sobreFoto = enInicio && !desplazado && !menuAbierto;
+
+  const enlaces = [
+    { destino: '/', texto: t.navInicio, fin: true },
+    { destino: '/tours', texto: t.navDestinos },
+    { destino: '/tours-privados', texto: t.navToursPrivados },
+    { destino: '/free-walking-tours', texto: t.navFreeTours },
+    { destino: '/quienes-somos', texto: t.navQuienesSomos },
+    { destino: '/blogs', texto: t.navBlogs },
+    { destino: '/contacto', texto: t.navContacto },
+  ];
+
   useEffect(() => {
     setMenuAbierto(false);
-    setDestinosAbiertos(false);
-  }, [ubicacion.pathname, ubicacion.search]);
+  }, [pathname, search]);
 
-  // Si la ventana crece hasta tamanio escritorio, se cierra el panel.
-  useEffect(() => {
-    function alRedimensionar() {
-      if (window.innerWidth > ANCHO_PLEGADO) setMenuAbierto(false);
-    }
-
-    window.addEventListener('resize', alRedimensionar);
-    return () => window.removeEventListener('resize', alRedimensionar);
-  }, []);
-
-  // Una linea de sombra aparece en cuanto la pagina deja de estar arriba del
-  // todo: sobre el blanco del contenido, la barra dejaria de distinguirse.
   useEffect(() => {
     function alDesplazar() {
-      setDesplazado(window.scrollY > 8);
+      setDesplazado(window.scrollY > 60);
     }
 
     alDesplazar();
@@ -61,61 +61,51 @@ export default function BarraNavegacion() {
     return () => window.removeEventListener('scroll', alDesplazar);
   }, []);
 
-  // Con el panel abierto en movil no se desplaza el fondo.
   useEffect(() => {
-    document.body.style.overflow = menuAbierto ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (!menuAbierto) return undefined;
+
+    document.body.style.overflow = 'hidden';
+    primerEnlace.current?.focus();
+
+    function alPulsarTecla(evento) {
+      if (evento.key === 'Escape') {
+        setMenuAbierto(false);
+        botonMenu.current?.focus();
+      }
+    }
+
+    document.addEventListener('keydown', alPulsarTecla);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', alPulsarTecla);
+    };
   }, [menuAbierto]);
 
-  const claseEnlace = ({ isActive }) => (isActive ? 'activo' : undefined);
+  const clases = [
+    'cabecera',
+    sobreFoto && 'sobre-foto',
+    desplazado && 'desplazada',
+    menuAbierto && 'con-menu',
+  ].filter(Boolean).join(' ');
 
   return (
-    <header className={`cabecera${desplazado ? ' desplazada' : ''}`}>
+    <header className={clases}>
       <div className="cabecera-barra">
-        <Link to="/" className="cabecera-logo" aria-label={SITIO.nombre}>
-          <img src={SITIO.logo} alt={SITIO.nombre} width="160" height="64" />
-        </Link>
-
-        <nav
-          id="menu-principal"
-          className={`menu${menuAbierto ? ' abierto' : ''}`}
-          aria-label="Principal"
+        <button
+          type="button"
+          ref={botonMenu}
+          className="cabecera-menu"
+          onClick={() => setMenuAbierto((abierto) => !abierto)}
+          aria-expanded={menuAbierto}
+          aria-controls="menu-completo"
         >
-          <NavLink to="/" className={claseEnlace} end>{t.navInicio}</NavLink>
+          <span className="hamburguesa" aria-hidden="true"><i /><i /></span>
+          <span className="cabecera-menu-texto">{menuAbierto ? t.cerrarMenu : t.menu}</span>
+        </button>
 
-          <div className={`menu-destinos${destinosAbiertos ? ' abierto' : ''}`}>
-            <div className="menu-destinos-fila">
-              <NavLink to="/tours" className={claseEnlace}>{t.navDestinos}</NavLink>
-
-              {/* Solo visible en el panel plegado: en escritorio abre el hover */}
-              <button
-                type="button"
-                className="menu-destinos-boton"
-                onClick={() => setDestinosAbiertos((abierto) => !abierto)}
-                aria-expanded={destinosAbiertos}
-                aria-label={t.navCiudades}
-              >
-                <span aria-hidden="true">+</span>
-              </button>
-            </div>
-
-            <div className="menu-destinos-panel">
-              {ciudades.map((ciudad) => (
-                <Link key={ciudad.clave} to={`/tours?ciudad=${ciudad.clave}`}>
-                  <span>{ciudad.nombre}</span>
-                  <small>{ciudad.cantidad}</small>
-                </Link>
-              ))}
-              <Link to="/tours" className="menu-destinos-todos">{t.navTodasCiudades} →</Link>
-            </div>
-          </div>
-
-          <NavLink to="/tours-privados" className={claseEnlace}>{t.navToursPrivados}</NavLink>
-          <NavLink to="/free-walking-tours" className={claseEnlace}>{t.navFreeTours}</NavLink>
-          <NavLink to="/quienes-somos" className={claseEnlace}>{t.navQuienesSomos}</NavLink>
-          <NavLink to="/blogs" className={claseEnlace}>{t.navBlogs}</NavLink>
-          <NavLink to="/contacto" className={claseEnlace}>{t.navContacto}</NavLink>
-        </nav>
+        <Link to="/" className="cabecera-logo" aria-label={SITIO.nombre}>
+          <img src={sobreFoto || menuAbierto ? SITIO.logoBlanco : SITIO.logo} alt={SITIO.nombre} width="150" height="60" />
+        </Link>
 
         <div className="cabecera-herramientas">
           <select
@@ -130,33 +120,74 @@ export default function BarraNavegacion() {
           </select>
 
           <a
-            className="boton boton-solido cabecera-reservar"
+            className="cabecera-reservar"
             href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
             target="_blank"
             rel="noreferrer"
           >
             {t.reservar}
           </a>
+        </div>
+      </div>
 
-          <Link
-            to="/panel"
-            className="boton-circular cabecera-panel"
-            title={usuario ? `${t.navAdmin} · ${usuario.correo}` : t.navAdmin}
-            aria-label={t.navAdmin}
-          >
-            <IconoUsuario tamano={18} />
-          </Link>
+      <div
+        id="menu-completo"
+        className={`menu-completo${menuAbierto ? ' abierto' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t.menu}
+        aria-hidden={!menuAbierto}
+        inert={menuAbierto ? undefined : ''}
+      >
+        <div className="menu-completo-foto" aria-hidden="true">
+          {portadas.slice(0, enlaces.length).map((foto, indice) => (
+            <img
+              key={foto}
+              src={foto}
+              alt=""
+              loading="lazy"
+              className={indice === fotoMenu % Math.max(1, Math.min(portadas.length, enlaces.length)) ? 'activa' : undefined}
+            />
+          ))}
+        </div>
 
-          <button
-            type="button"
-            className="boton-circular cabecera-menu"
-            onClick={() => setMenuAbierto((abierto) => !abierto)}
-            aria-label={menuAbierto ? t.cerrarMenu : t.abrirMenu}
-            aria-expanded={menuAbierto}
-            aria-controls="menu-principal"
-          >
-            {menuAbierto ? <IconoCruz tamano={22} /> : <IconoMenu tamano={24} />}
-          </button>
+        <nav className="menu-completo-principal" aria-label="Principal">
+          {enlaces.map((enlace, indice) => (
+            <NavLink
+              key={enlace.destino}
+              to={enlace.destino}
+              end={enlace.fin}
+              ref={indice === 0 ? primerEnlace : undefined}
+              className={({ isActive }) => (isActive ? 'activo' : undefined)}
+              style={{ '--i': indice }}
+              onMouseEnter={() => setFotoMenu(indice)}
+              onFocus={() => setFotoMenu(indice)}
+            >
+              <span className="menu-num">{String(indice + 1).padStart(2, '0')}</span>
+              <span className="menu-texto">{enlace.texto}</span>
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="menu-completo-lateral">
+          <span className="entradilla entradilla-clara">{t.menuDestinos}</span>
+          <ul className="menu-ciudades">
+            {ciudades.map((ciudad) => (
+              <li key={ciudad.clave}>
+                <Link to={`/tours?ciudad=${ciudad.clave}`}>
+                  {ciudad.nombre} <small>{ciudad.cantidad}</small>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <span className="entradilla entradilla-clara">{t.menuSiguenos}</span>
+          <div className="menu-redes">
+            <a href={SITIO.redes.instagram} target="_blank" rel="noreferrer" aria-label="Instagram"><IconoInstagram /></a>
+            <a href={SITIO.redes.facebook} target="_blank" rel="noreferrer" aria-label="Facebook"><IconoFacebook /></a>
+            <a href={SITIO.redes.tiktok} target="_blank" rel="noreferrer" aria-label="TikTok"><IconoTiktok /></a>
+            <Link to="/panel" aria-label={t.navAdmin} title={t.navAdmin}><IconoUsuario /></Link>
+          </div>
         </div>
       </div>
     </header>

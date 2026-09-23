@@ -1,19 +1,20 @@
 /**
- * Blog: tarjetas con buscador y filtro por categoria. Al pulsar una, el
- * articulo completo se abre en una ventana de lectura.
+ * Blog como revista: las categorias son pestanias, el primer articulo va a
+ * doble ancho y el resto en rejilla. Al abrir uno se lee a pantalla
+ * completa, con una barra arriba que marca cuanto queda.
  *
  * Entiende ?articulo=ID en la direccion, que es a donde llevan las tarjetas
  * del inicio: sin eso, el clic en un articulo concreto dejaba al visitante
  * en el listado, buscando a mano lo que acababa de elegir.
  */
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import CabeceraPagina from '../componentes/CabeceraPagina.jsx';
 import VentanaDetalle from '../componentes/VentanaDetalle.jsx';
 import { Cargando, ErrorCarga, SinResultados } from '../componentes/Estado.jsx';
-import { IconoReloj } from '../componentes/Iconos.jsx';
+import { IconoFlecha } from '../componentes/Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { usarBlogs } from '../ganchos/usarPeticion.js';
 
@@ -78,27 +79,32 @@ export default function PaginaBlogs() {
         kanji="話"
       />
 
-      <section className="seccion">
-        <div className="buscador">
-          <label className="campo">
-            <span>{t.etiquetaBuscar}</span>
-            <input
-              type="search"
-              value={busqueda}
-              onChange={(evento) => setBusqueda(evento.target.value)}
-              placeholder={t.buscarArticulos}
-            />
-          </label>
+      <section className="seccion revista">
+        <div className="revista-barra">
+          <div className="pestanias-revista" role="group" aria-label={t.etiquetaCategoria}>
+            <button type="button" aria-pressed={categoriaFiltro === 'todas'} onClick={() => setCategoriaFiltro('todas')}>
+              {t.todasCategorias}
+            </button>
+            {categorias.map((categoria) => (
+              <button
+                key={categoria}
+                type="button"
+                aria-pressed={categoriaFiltro === categoria}
+                onClick={() => setCategoriaFiltro(categoria)}
+              >
+                {categoria}
+              </button>
+            ))}
+          </div>
 
-          <label className="campo">
-            <span>{t.etiquetaCategoria}</span>
-            <select value={categoriaFiltro} onChange={(evento) => setCategoriaFiltro(evento.target.value)}>
-              <option value="todas">{t.todasCategorias}</option>
-              {categorias.map((categoria) => (
-                <option key={categoria} value={categoria}>{categoria}</option>
-              ))}
-            </select>
-          </label>
+          <input
+            type="search"
+            className="buscador-linea"
+            value={busqueda}
+            onChange={(evento) => setBusqueda(evento.target.value)}
+            placeholder={t.buscarArticulos}
+            aria-label={t.etiquetaBuscar}
+          />
         </div>
 
         {cargando && <Cargando mensaje={t.cargando} />}
@@ -109,28 +115,26 @@ export default function PaginaBlogs() {
         )}
 
         {!cargando && !error && blogsFiltrados.length > 0 && (
-          <div className="rejilla rejilla-3">
-            {blogsFiltrados.map((blog) => (
+          <div className="revista-rejilla">
+            {blogsFiltrados.map((blog, indice) => (
               <button
                 key={blog.id}
                 type="button"
-                className={`tarjeta revelar${articuloElegido?.id === blog.id ? ' seleccionada' : ''}`}
+                className={`articulo-tarjeta revelar${indice === 0 ? ' destacado' : ''}`}
                 onClick={() => abrirArticulo(blog)}
               >
-                <div className="tarjeta-foto">
-                  {blog.categoria && <span className="insignia">{blog.categoria}</span>}
-                  <img src={blog.imagen} alt={blog.titulo} loading="lazy" />
-                </div>
-
-                <div className="tarjeta-cuerpo">
-                  <h3>{blog.titulo}</h3>
-                  <p className="tarjeta-resumen">{blog.resumen}</p>
-                  <div className="tarjeta-datos">
-                    <span className="tarjeta-duracion"><IconoReloj tamano={16} /> {blog.fecha}</span>
-                    {blog.autor && <span className="tarjeta-autor">{blog.autor}</span>}
-                  </div>
-                  <span className="tarjeta-mas">{t.leerArticulo} →</span>
-                </div>
+                <span className="articulo-tarjeta-foto">
+                  <img src={blog.imagen} alt="" loading="lazy" />
+                </span>
+                <span className="articulo-tarjeta-texto">
+                  {blog.categoria && <span className="entradilla entradilla-sola">{blog.categoria}</span>}
+                  <span className="articulo-tarjeta-titulo">{blog.titulo}</span>
+                  <span className="articulo-tarjeta-resumen">{blog.resumen}</span>
+                  <span className="articulo-tarjeta-pie">
+                    <span>{blog.fecha}{blog.autor ? ` · ${blog.autor}` : ''}</span>
+                    <span className="enlace-flecha">{t.leerArticulo} <IconoFlecha tamano={16} /></span>
+                  </span>
+                </span>
               </button>
             ))}
           </div>
@@ -143,28 +147,57 @@ export default function PaginaBlogs() {
         clave={articuloElegido?.id}
         titulo={articuloElegido?.titulo}
         textoCerrar={t.cerrarDetalle}
+        variante="lector"
       >
-        {articuloElegido && (
-          <article className="articulo">
-            <img className="articulo-portada" src={articuloElegido.imagen} alt={articuloElegido.titulo} />
-
-            <div className="articulo-cuerpo">
-              {articuloElegido.categoria && <div className="entradilla">{articuloElegido.categoria}</div>}
-              <h2>{articuloElegido.titulo}</h2>
-
-              <div className="articulo-meta">
-                <span>{t.escritoPor} <strong>{articuloElegido.autor}</strong></span>
-                <span>{t.publicadoEl} {articuloElegido.fecha}</span>
-              </div>
-
-              <div
-                className="articulo-texto"
-                dangerouslySetInnerHTML={{ __html: articuloElegido.contenido }}
-              />
-            </div>
-          </article>
-        )}
+        {articuloElegido && <Articulo articulo={articuloElegido} />}
       </VentanaDetalle>
     </>
+  );
+}
+
+/**
+ * El articulo abierto. La barra de progreso escucha el desplazamiento de la
+ * propia ventana (que es la que se mueve, no la pagina) y escribe el avance
+ * en una variable CSS: sin estado de React, para no repintar al leer.
+ */
+function Articulo({ articulo }) {
+  const { t } = usarIdioma();
+  const barra = useRef(null);
+
+  useEffect(() => {
+    const contenedor = barra.current?.closest('.ventana');
+    if (!contenedor) return undefined;
+
+    function alDesplazar() {
+      const maximo = contenedor.scrollHeight - contenedor.clientHeight;
+      const avance = maximo > 0 ? contenedor.scrollTop / maximo : 0;
+      barra.current?.style.setProperty('--avance', avance.toFixed(4));
+    }
+
+    alDesplazar();
+    contenedor.addEventListener('scroll', alDesplazar, { passive: true });
+    return () => contenedor.removeEventListener('scroll', alDesplazar);
+  }, [articulo.id]);
+
+  return (
+    <article className="articulo">
+      <span ref={barra} className="articulo-progreso" aria-hidden="true" />
+
+      <div className="articulo-portada">
+        <img src={articulo.imagen} alt={articulo.titulo} />
+      </div>
+
+      <div className="articulo-cuerpo">
+        {articulo.categoria && <div className="entradilla">{articulo.categoria}</div>}
+        <h2>{articulo.titulo}</h2>
+
+        <div className="articulo-meta">
+          <span>{t.escritoPor} <strong>{articulo.autor}</strong></span>
+          <span>{t.publicadoEl} {articulo.fecha}</span>
+        </div>
+
+        <div className="articulo-texto" dangerouslySetInnerHTML={{ __html: articulo.contenido }} />
+      </div>
+    </article>
   );
 }

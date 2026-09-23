@@ -1,100 +1,94 @@
 /**
- * Reseñas de viajeros en columnas, con filtro por fuente.
+ * Reseñas de una en una, en grande, como una cita en una revista.
  *
- * Arriba, dos insignias que llevan a las fichas publicas: la nota de
- * Tripadvisor y GuruWalk, cuyas reseñas son de reservas verificadas. Son el
- * respaldo de lo que se cita abajo; sin el enlace, una nota de 5.0 escrita
- * en la propia web no convence a nadie.
+ * Pasan solas cada 8 segundos y se pueden mover con las flechas. Se paran
+ * mientras el raton o el foco estan dentro: nadie quiere que el texto que
+ * esta leyendo se cambie a media frase.
  *
- * De entrada se ven seis. Al filtrar por una fuente se muestran todas las
- * de esa fuente: filtrar y seguir viendo solo seis seria esconder justo lo
- * que se ha pedido ver.
+ * Al lado, la nota de Tripadvisor enlazada a la ficha publica, que es el
+ * respaldo de lo que se cita.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-import ConEnfasis, { sinMarcas } from './ConEnfasis.jsx';
-import { Estrellas } from './Iconos.jsx';
+import ConEnfasis from './ConEnfasis.jsx';
+import { Estrellas, IconoAnterior, IconoSiguiente, IconoFlecha } from './Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { SITIO } from '../configuracion/sitio.js';
 
-const VISIBLES_DE_ENTRADA = 6;
+const SEGUNDOS_POR_RESENA = 8000;
+const dosCifras = (numero) => String(numero).padStart(2, '0');
 
 export default function SeccionResenas({ resenas }) {
   const { t } = usarIdioma();
-  const [fuente, setFuente] = useState('todas');
-  const [abiertas, setAbiertas] = useState(false);
+  const [actual, setActual] = useState(0);
+  const [pausada, setPausada] = useState(false);
 
-  if (resenas.length === 0) return null;
+  const total = resenas.length;
 
-  const filtros = [
-    { clave: 'todas', etiqueta: t.resenasTodas, total: resenas.length },
-    { clave: 'tripadvisor', etiqueta: 'Tripadvisor', total: resenas.filter((r) => r.fuente === 'tripadvisor').length },
-    { clave: 'guruwalk', etiqueta: 'GuruWalk', total: resenas.filter((r) => r.fuente === 'guruwalk').length },
-  ];
+  useEffect(() => {
+    if (pausada || total < 2) return undefined;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
-  const filtradas = fuente === 'todas' ? resenas : resenas.filter((r) => r.fuente === fuente);
-  const visibles = fuente === 'todas' && !abiertas ? filtradas.slice(0, VISIBLES_DE_ENTRADA) : filtradas;
-  const quedanOcultas = visibles.length < filtradas.length;
+    const temporizador = setTimeout(() => setActual((valor) => (valor + 1) % total), SEGUNDOS_POR_RESENA);
+    return () => clearTimeout(temporizador);
+  }, [actual, pausada, total]);
+
+  if (total === 0) return null;
+
+  const resena = resenas[actual];
+  const mover = (paso) => setActual((valor) => (valor + paso + total) % total);
 
   return (
-    <section className="seccion seccion-resenas">
-      <div className="resenas-cabecera revelar">
-        <div>
-          <div className="entradilla">{t.resenasEntradilla}</div>
-          <h2 className="titulo-seccion"><ConEnfasis texto={t.resenasTitulo} /></h2>
-        </div>
+    <section
+      className="testimonios"
+      onMouseEnter={() => setPausada(true)}
+      onMouseLeave={() => setPausada(false)}
+      onFocus={() => setPausada(true)}
+      onBlur={() => setPausada(false)}
+    >
+      <div className="testimonios-lado revelar">
+        <div className="entradilla entradilla-clara">{t.resenasEntradilla}</div>
+        <h2 className="titulo-seccion"><ConEnfasis texto={t.resenasTitulo} /></h2>
 
-        <div className="resenas-insignias">
-          <a className="insignia-resenas" href={SITIO.resenas.tripadvisor} target="_blank" rel="noreferrer">
-            <b>{SITIO.resenas.notaTripadvisor.toFixed(1)} <Estrellas tamano={18} /></b>
+        <a className="testimonios-nota" href={SITIO.resenas.tripadvisor} target="_blank" rel="noreferrer">
+          <b>{SITIO.resenas.notaTripadvisor.toFixed(1)}</b>
+          <span>
+            <Estrellas tamano={16} />
             <small>{SITIO.resenas.totalTripadvisor} {t.resenasOpiniones}</small>
-          </a>
-          <a className="insignia-resenas" href={SITIO.resenas.guruwalk} target="_blank" rel="noreferrer">
-            <b className="insignia-resenas-marca">GuruWalk</b>
-            <small>{t.resenasVerificada}</small>
+          </span>
+        </a>
+      </div>
+
+      <div className="testimonios-cita">
+        {/* La clave recrea la cita en cada cambio para repetir su entrada */}
+        <figure key={resena.id} className="testimonio">
+          <span className="testimonio-comilla" aria-hidden="true">“</span>
+          <blockquote>{resena.texto}</blockquote>
+          <figcaption>
+            <b>{resena.autor}</b>
+            {resena.detalle && <span>{resena.detalle}</span>}
+            <span className="testimonio-fuente">
+              {resena.fuente === 'tripadvisor' ? 'Tripadvisor' : t.resenasFuenteGw}
+            </span>
+          </figcaption>
+        </figure>
+
+        <div className="testimonios-controles">
+          <button type="button" className="boton-circular" onClick={() => mover(-1)} aria-label={t.resenaAnterior}>
+            <IconoAnterior tamano={20} />
+          </button>
+          <span className="testimonios-cuenta">
+            <b>{dosCifras(actual + 1)}</b> / {dosCifras(total)}
+          </span>
+          <button type="button" className="boton-circular" onClick={() => mover(1)} aria-label={t.resenaSiguiente}>
+            <IconoSiguiente tamano={20} />
+          </button>
+
+          <a className="enlace-flecha" href={SITIO.resenas.tripadvisor} target="_blank" rel="noreferrer">
+            {t.resenasLeerTripadvisor} <IconoFlecha tamano={18} />
           </a>
         </div>
-      </div>
-
-      <div className="chips" role="group" aria-label={sinMarcas(t.resenasTitulo)}>
-        {filtros.map((filtro) => (
-          <button
-            key={filtro.clave}
-            type="button"
-            aria-pressed={fuente === filtro.clave}
-            onClick={() => setFuente(filtro.clave)}
-          >
-            {filtro.etiqueta} ({filtro.total})
-          </button>
-        ))}
-      </div>
-
-      <div className="resenas-columnas">
-        {visibles.map((resena) => (
-          <figure key={resena.id} className="resena revelar">
-            <Estrellas />
-            <blockquote>“{resena.texto}”</blockquote>
-            <figcaption>
-              <b>{resena.autor}</b>
-              {resena.detalle && <span>{resena.detalle}</span>}
-              <span className="resena-fuente">
-                {resena.fuente === 'tripadvisor' ? 'Tripadvisor' : t.resenasFuenteGw}
-              </span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-
-      <div className="resenas-acciones">
-        {quedanOcultas && (
-          <button type="button" className="boton boton-linea" onClick={() => setAbiertas(true)}>
-            {t.resenasVerMas}
-          </button>
-        )}
-        <a className="boton boton-linea" href={SITIO.resenas.tripadvisor} target="_blank" rel="noreferrer">
-          {t.resenasLeerTripadvisor}
-        </a>
       </div>
     </section>
   );

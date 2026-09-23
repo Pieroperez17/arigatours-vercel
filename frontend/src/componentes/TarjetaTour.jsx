@@ -1,17 +1,14 @@
 /**
- * Tarjeta de un tour: foto con etiqueta, titulo, duracion y precio.
+ * Tarjeta de un tour: la foto en vertical a sangre, con la ciudad y el
+ * titulo encima. Al pasar el raton (o al enfocarla con el teclado) sube un
+ * panel con la duracion y el precio; en pantallas tactiles, donde no hay
+ * hover, ese panel se ve siempre.
  *
- * Sirve para el inicio, donde es un enlace a la ficha, y para el listado,
- * donde es un boton que abre la ventana de detalle. Se decide por las props:
- * con "destino" es un Link; con "alElegir", un boton.
- *
- * La duracion y el precio van en dos lineas y no enfrentados: en la base hay
- * precios como "$175 USD (Base 2 pax) + $35 USD por persona adicional", que
- * en una sola linea partian la tarjeta por la mitad.
+ * Con "destino" es un Link; con "alElegir", un boton que abre la ficha.
  */
 
 import { Link } from 'react-router-dom';
-import { IconoReloj } from './Iconos.jsx';
+import { IconoReloj, IconoFlecha } from './Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 
 export default function TarjetaTour({ tour, etiqueta, destino, alElegir, seleccionada = false }) {
@@ -19,24 +16,20 @@ export default function TarjetaTour({ tour, etiqueta, destino, alElegir, selecci
 
   const contenido = (
     <>
-      <div className="tarjeta-foto">
-        {etiqueta && (
-          <span className={`insignia${tour.tipo === 'gratuito' ? ' insignia-clara' : ''}`}>{etiqueta}</span>
-        )}
-        <img src={tour.galeria?.[0] || tour.imagen} alt={tour.titulo} loading="lazy" draggable="false" />
-      </div>
+      <img src={tour.galeria?.[0] || tour.imagen} alt="" loading="lazy" draggable="false" />
+      <span className="tarjeta-velo" aria-hidden="true" />
 
-      <div className="tarjeta-cuerpo">
+      <div className="tarjeta-texto">
+        {etiqueta && <span className="tarjeta-etiqueta">{etiqueta}</span>}
         <h3>{tour.titulo}</h3>
 
-        <div className="tarjeta-datos">
+        <div className="tarjeta-panel">
           {tour.duracion && (
-            <span className="tarjeta-duracion"><IconoReloj tamano={16} /> {tour.duracion}</span>
+            <span className="tarjeta-duracion"><IconoReloj tamano={15} /> {tour.duracion}</span>
           )}
           {tour.precio && <span className="tarjeta-precio">{tour.precio}</span>}
+          <span className="tarjeta-mas">{t.verDetalles} <IconoFlecha tamano={16} /></span>
         </div>
-
-        <span className="tarjeta-mas">{t.verDetalles} →</span>
       </div>
     </>
   );

@@ -55,37 +55,27 @@ export default function Disenio() {
 
       <BarraNavegacion />
 
-      <main id="contenido">
+      {/* En el inicio la portada va a pantalla completa, por debajo de la
+          cabecera transparente; en el resto se deja el hueco de la barra. */}
+      <main id="contenido" className={pathname === '/' ? 'bajo-cabecera' : undefined}>
         <Outlet />
       </main>
 
       {!esPaginaDeSocio && <PiePagina />}
 
       {conLlamadas && (
-        <>
-          {/* En escritorio, el circulo flotante; en movil ocuparia el hueco
-              del pulgar, asi que alli se cambia por una barra fija abajo. */}
-          <a
-            href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
-            target="_blank"
-            rel="noreferrer"
-            className="whatsapp-flotante"
-            aria-label={t.reservarWhatsapp}
-          >
-            <IconoChat tamano={28} />
-          </a>
-
-          <div className="barra-reserva-movil">
-            <a
-              href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
-              target="_blank"
-              rel="noreferrer"
-              className="boton boton-solido"
-            >
-              <IconoChat tamano={18} /> {t.reservarWhatsapp}
-            </a>
-          </div>
-        </>
+        /* Una pastilla que dice lo que hace en vez de un icono suelto: al
+           pasar el raton se despliega el texto; en movil queda el circulo. */
+        <a
+          href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
+          target="_blank"
+          rel="noreferrer"
+          className="whatsapp-flotante"
+          aria-label={t.reservarWhatsapp}
+        >
+          <IconoChat tamano={22} />
+          <span className="whatsapp-flotante-texto">{t.hablamos}</span>
+        </a>
       )}
     </>
   );

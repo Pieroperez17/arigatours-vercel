@@ -1,20 +1,19 @@
 /**
  * Formulario de contacto.
  *
- * Dos mitades: a la izquierda, sobre rojo, por que escribir y como hacerlo
- * por otros medios; a la derecha, el formulario. Quien prefiere WhatsApp o
- * el telefono lo encuentra sin tener que bajar hasta el pie.
+ * A la izquierda las vias rapidas (WhatsApp, correo, telefono) como filas
+ * grandes, porque la mayoria prefiere escribir por chat; a la derecha el
+ * formulario, con campos de una sola linea cuya etiqueta sube al escribir.
  *
  * La validacion se hace en dos capas: aqui para avisar rapido al visitante,
  * y otra vez en el backend, que es la que realmente protege los datos.
  */
 
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import ConEnfasis from '../componentes/ConEnfasis.jsx';
-import {
-  IconoCorreo, IconoTelefono, IconoChat, IconoEnviar, IconoCheck,
-} from '../componentes/Iconos.jsx';
+import TituloPorLineas from '../componentes/TituloPorLineas.jsx';
+import { IconoCorreo, IconoTelefono, IconoChat, IconoFlecha, IconoCheck } from '../componentes/Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { apiContacto } from '../servicios/clienteApi.js';
 import { SITIO, enlaceWhatsapp } from '../configuracion/sitio.js';
@@ -26,6 +25,30 @@ const FORMULARIO_VACIO = {
   correo: '',
   mensaje: '',
 };
+
+/*
+ * El placeholder de un espacio es a proposito: la etiqueta flotante se
+ * decide con :placeholder-shown, que solo funciona si el campo tiene uno.
+ */
+function Campo({ nombre, etiqueta, tipo = 'text', valor, alCambiar, fijo = false, multilinea = false, ...resto }) {
+  const Control = multilinea ? 'textarea' : 'input';
+
+  return (
+    <div className={`campo-linea${fijo ? ' fijo' : ''}`}>
+      <Control
+        id={`contacto-${nombre}`}
+        name={nombre}
+        type={multilinea ? undefined : tipo}
+        value={valor}
+        onChange={alCambiar}
+        placeholder=" "
+        required
+        {...resto}
+      />
+      <label htmlFor={`contacto-${nombre}`}>{etiqueta} <em className="obligatorio">*</em></label>
+    </div>
+  );
+}
 
 export default function PaginaContacto() {
   const { idioma, t } = usarIdioma();
@@ -64,78 +87,52 @@ export default function PaginaContacto() {
     }
   }
 
+  const vias = [
+    { icono: <IconoChat />, etiqueta: 'WhatsApp', valor: SITIO.telefono, enlace: enlaceWhatsapp(t.mensajeWhatsappGeneral), externo: true },
+    { icono: <IconoCorreo />, etiqueta: t.formCorreo, valor: SITIO.correo, enlace: `mailto:${SITIO.correo}` },
+    { icono: <IconoTelefono />, etiqueta: t.formTelefono, valor: SITIO.telefono, enlace: `tel:+${SITIO.whatsapp}` },
+  ];
+
   return (
     <section className="contacto">
-      <div className="contacto-lado">
-        <span className="contacto-kanji" aria-hidden="true">旅</span>
+      <div className="contacto-intro">
+        <nav className="migas" aria-label="Ruta">
+          <Link to="/">{t.navInicio}</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{t.navContacto}</span>
+        </nav>
 
-        <div className="entradilla entradilla-clara">{t.navContacto}</div>
-        <h1><ConEnfasis texto={t.contactoTitulo} /></h1>
+        <h1><TituloPorLineas texto={t.contactoTitulo} /></h1>
         <p>{t.contactoDescripcion}</p>
 
-        <div className="contacto-enlaces">
-          <a href={`mailto:${SITIO.correo}`}><IconoCorreo /> {SITIO.correo}</a>
-          <a href={`tel:+${SITIO.whatsapp}`}><IconoTelefono /> {SITIO.telefono}</a>
-          <a href={enlaceWhatsapp(t.mensajeWhatsappGeneral)} target="_blank" rel="noreferrer">
-            <IconoChat /> WhatsApp
-          </a>
-        </div>
-
-        <div className="contacto-redes">
-          <a href={SITIO.redes.facebook} target="_blank" rel="noreferrer">Facebook</a>
-          <a href={SITIO.redes.instagram} target="_blank" rel="noreferrer">Instagram</a>
-          <a href={SITIO.redes.tiktok} target="_blank" rel="noreferrer">TikTok</a>
-        </div>
+        <ul className="contacto-vias">
+          {vias.map((via) => (
+            <li key={via.etiqueta}>
+              <a href={via.enlace} {...(via.externo ? { target: '_blank', rel: 'noreferrer' } : {})}>
+                <span className="contacto-vias-icono">{via.icono}</span>
+                <span className="contacto-vias-texto">
+                  <small>{via.etiqueta}</small>
+                  <b>{via.valor}</b>
+                </span>
+                <IconoFlecha tamano={22} />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <form className="contacto-formulario" onSubmit={enviar} noValidate>
         <h2>{t.contactoFormTitulo}</h2>
 
-        <label className="campo">
-          <span>{t.formNombre} <em className="obligatorio">*</em></span>
-          <input
-            name="nombre" type="text" required
-            value={formulario.nombre} onChange={actualizarCampo}
-            placeholder={t.formNombrePlaceholder} autoComplete="name"
-          />
-        </label>
+        <Campo nombre="nombre" etiqueta={t.formNombre} valor={formulario.nombre} alCambiar={actualizarCampo} autoComplete="name" />
 
         <div className="campos-dobles">
-          <label className="campo">
-            <span>{t.formFecha} <em className="obligatorio">*</em></span>
-            <input
-              name="fechaViaje" type="date" required
-              value={formulario.fechaViaje} onChange={actualizarCampo}
-            />
-          </label>
-
-          <label className="campo">
-            <span>{t.formTelefono} <em className="obligatorio">*</em></span>
-            <input
-              name="telefono" type="tel" required
-              value={formulario.telefono} onChange={actualizarCampo}
-              placeholder={t.formTelefonoPlaceholder} autoComplete="tel"
-            />
-          </label>
+          <Campo nombre="fechaViaje" etiqueta={t.formFecha} tipo="date" valor={formulario.fechaViaje} alCambiar={actualizarCampo} fijo />
+          <Campo nombre="telefono" etiqueta={t.formTelefono} tipo="tel" valor={formulario.telefono} alCambiar={actualizarCampo} autoComplete="tel" />
         </div>
 
-        <label className="campo">
-          <span>{t.formCorreo} <em className="obligatorio">*</em></span>
-          <input
-            name="correo" type="email" required
-            value={formulario.correo} onChange={actualizarCampo}
-            placeholder={t.formCorreoPlaceholder} autoComplete="email"
-          />
-        </label>
-
-        <label className="campo">
-          <span>{t.formMensaje} <em className="obligatorio">*</em></span>
-          <textarea
-            name="mensaje" rows="5" required
-            value={formulario.mensaje} onChange={actualizarCampo}
-            placeholder={t.formMensajePlaceholder}
-          />
-        </label>
+        <Campo nombre="correo" etiqueta={t.formCorreo} tipo="email" valor={formulario.correo} alCambiar={actualizarCampo} autoComplete="email" />
+        <Campo nombre="mensaje" etiqueta={t.formMensaje} valor={formulario.mensaje} alCambiar={actualizarCampo} multilinea rows="4" />
 
         <label className="casilla">
           <input
@@ -148,7 +145,7 @@ export default function PaginaContacto() {
 
         <button type="submit" className="boton boton-solido" disabled={enviando}>
           {enviando ? t.formEnviando : t.formEnviar}
-          {!enviando && <IconoEnviar tamano={18} />}
+          {!enviando && <IconoFlecha tamano={18} />}
         </button>
 
         {aviso && (

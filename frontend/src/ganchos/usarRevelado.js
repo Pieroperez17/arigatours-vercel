@@ -1,6 +1,7 @@
 /**
  * Aparicion suave al desplazarse: todo lo que lleve la clase "revelar" entra
- * subiendo y aclarandose la primera vez que asoma en pantalla.
+ * subiendo y aclarandose la primera vez que asoma en pantalla; lo que lleve
+ * "revelar-foto" se descubre con un recorte de abajo arriba.
  *
  * Un solo observador para toda la pagina, montado en el armazon, en lugar de
  * un gancho por tarjeta. La mayoria del contenido llega de la API despues de
@@ -27,7 +28,7 @@ import { useEffect } from 'react';
  * dejo esperando tienen que pasar al nuevo; si no, se quedarian invisibles.
  * Observar dos veces el mismo elemento no hace nada, asi que repetir es inocuo.
  */
-const PENDIENTES = '.revelar:not([data-revelado="visible"]):not([data-revelado="hecho"])';
+const PENDIENTES = ':is(.revelar, .revelar-foto):not([data-revelado="visible"]):not([data-revelado="hecho"])';
 const ESCALON_MS = 90;
 const MAXIMO_ESCALONES = 5;
 
@@ -56,15 +57,27 @@ export function usarRevelado() {
         observador.unobserve(elemento);
         elemento.dataset.revelado = 'visible';
 
-        // Respaldo por si transitionend no llega (pestana en segundo plano).
         const cerrar = () => {
           elemento.dataset.revelado = 'hecho';
           elemento.style.removeProperty('--retraso');
         };
-        elemento.addEventListener('transitionend', (evento) => {
-          if (evento.target === elemento) cerrar();
-        }, { once: true });
-        setTimeout(cerrar, 1600);
+
+        /*
+         * En las fotos la transicion corre en la imagen de dentro, no en el
+         * marco observado: se espera a que termine su recorte. Los
+         * transitionend de otros hijos (el hover de una tarjeta) se ignoran.
+         */
+        const esFoto = elemento.classList.contains('revelar-foto');
+        elemento.addEventListener('transitionend', function alTerminar(evento) {
+          const propia = evento.target === elemento;
+          const delRecorte = esFoto && evento.propertyName === 'clip-path';
+          if (!propia && !delRecorte) return;
+          elemento.removeEventListener('transitionend', alTerminar);
+          cerrar();
+        });
+
+        // Respaldo por si transitionend no llega (pestana en segundo plano).
+        setTimeout(cerrar, 2400);
       }
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
@@ -78,7 +91,7 @@ export function usarRevelado() {
         elemento.dataset.revelado = 'espera';
 
         const hermanos = elemento.parentElement
-          ? [...elemento.parentElement.children].filter((hijo) => hijo.classList.contains('revelar'))
+          ? [...elemento.parentElement.children].filter((hijo) => hijo.matches('.revelar, .revelar-foto'))
           : [];
         const posicion = Math.max(0, hermanos.indexOf(elemento));
         elemento.style.setProperty('--retraso', `${Math.min(posicion, MAXIMO_ESCALONES) * ESCALON_MS}ms`);

@@ -1,6 +1,13 @@
 /**
  * Ventana emergente (modal) donde se muestra el detalle de lo seleccionado.
  *
+ * Tiene dos formas, segun lo que se abre:
+ *   · cajon  → entra por la derecha y ocupa el alto de la pantalla. Para la
+ *              ficha de un tour: se sigue viendo el listado a la izquierda,
+ *              y eso ayuda a no perder el sitio al comparar.
+ *   · lector → sube desde abajo y ocupa la pantalla entera. Para leer un
+ *              articulo sin nada alrededor que distraiga.
+ *
  * El truco para poder animar la SALIDA es no desmontar la ventana de
  * inmediato: se mantiene en el DOM ("montado") mientras se reproduce la
  * animacion de cierre y solo despues se retira. El contenido se guarda en una
@@ -15,8 +22,8 @@ import { useState, useEffect, useRef } from 'react';
 import { usarBloqueoScroll } from '../ganchos/usarBloqueoScroll.js';
 import { IconoCruz } from './Iconos.jsx';
 
-/** Debe coincidir con la duracion de "salirVentana" en global.css. */
-const DURACION_SALIDA = 240;
+/** Debe coincidir con la duracion de la salida de la ventana en global.css. */
+const DURACION_SALIDA = 320;
 
 export default function VentanaDetalle({
   abierto,
@@ -25,7 +32,7 @@ export default function VentanaDetalle({
   titulo,
   children,
   textoCerrar = 'Cerrar',
-  ancha = false,  // la ficha de un tour lleva dos columnas y necesita mas sitio
+  variante = 'cajon',
 }) {
   const [montado, setMontado] = useState(abierto);
   const [saliendo, setSaliendo] = useState(false);
@@ -103,11 +110,11 @@ export default function VentanaDetalle({
 
   return (
     <div
-      className={`ventana-fondo${saliendo ? ' saliendo' : ''}`}
+      className={`ventana-fondo ventana-fondo-${variante}${saliendo ? ' saliendo' : ''}`}
       onClick={(evento) => { if (evento.target === evento.currentTarget) alCerrar(); }}
     >
       <div
-        className={`ventana${ancha ? ' ventana-ancha' : ''}${saliendo ? ' saliendo' : ''}`}
+        className={`ventana ventana-${variante}${saliendo ? ' saliendo' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-label={titulo || textoCerrar}

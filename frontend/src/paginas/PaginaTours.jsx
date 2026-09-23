@@ -1,6 +1,7 @@
 /**
- * Listado de tours agrupados por ciudad. Al elegir uno se abre su ficha en
- * una ventana, sin salir de la lista.
+ * Catalogo de tours: filtros en una columna lateral que acompana al bajar, y
+ * los resultados en rejilla. Al elegir uno, su ficha entra en un cajon por
+ * la derecha sin salir del listado.
  *
  * Un mismo componente sirve para tres rutas segun la prop "variante":
  *   · todos      → /tours
@@ -10,11 +11,10 @@
  * Entiende tres parametros en la direccion:
  *   · ?ciudad=kioto     → deja marcada esa ciudad en los filtros
  *   · ?tour=tour-xxx    → abre directamente la ficha de ese tour
- *   · ?fecha=AAAA-MM-DD → llega ya puesta en el cuadro de reserva
+ *   · ?fecha=AAAA-MM-DD → llega ya puesta en la barra de reserva
  *
- * La ciudad elegida se guarda en la direccion y no solo en el estado: asi el
- * enlace del menu (Destinos → Kioto) y un enlace compartido llevan al mismo
- * sitio, y el boton de volver del navegador deshace el filtro.
+ * Cada filtro lleva al lado cuantos tours quedarian al elegirlo: asi nadie
+ * pulsa una ciudad para encontrarse la lista vacia.
  */
 
 import { useState, useEffect, useMemo } from 'react';
@@ -28,16 +28,14 @@ import LlamadaFinal from '../componentes/LlamadaFinal.jsx';
 import { Cargando, ErrorCarga, SinResultados } from '../componentes/Estado.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { usarTours } from '../ganchos/usarPeticion.js';
-import { KANJI_CIUDAD } from '../configuracion/sitio.js';
 
-/** Traduce la variante de la ruta al filtro que entiende la API. */
 const TIPO_POR_VARIANTE = {
   todos: undefined,
   privados: 'privado',
   gratuitos: 'gratuito',
 };
 
-// El kanji del fondo de la cabecera: 旅 viaje, 私 privado, 歩 caminar.
+// El kanji del borde de la portadilla: 旅 viaje, 私 privado, 歩 caminar.
 const KANJI_POR_VARIANTE = { todos: '旅', privados: '私', gratuitos: '歩' };
 
 export default function PaginaTours({ variante = 'todos' }) {
@@ -59,41 +57,40 @@ export default function PaginaTours({ variante = 'todos' }) {
     gratuitos: { entradilla: t.navFreeTours, titulo: t.freeTitulo, subtitulo: t.freeSubtitulo },
   }[variante];
 
-  /**
-   * Nombre visible de cada ciudad, indexado por su clave.
-   *
-   * Se agrupa SIEMPRE por "ciudadClave" (kioto, himeji…), que es la misma en
-   * los tres idiomas, y no por el nombre traducido. Si se agrupara por el
-   * nombre, una ciudad sin traducir en japones abriria un grupo aparte
-   * ("姫路" y "Himeji" por separado). Para el titulo se usa la primera
-   * traduccion disponible de esa ciudad.
+  /*
+   * Ciudades por su clave (kioto, himeji…), que es la misma en los tres
+   * idiomas, y no por el nombre traducido: si no, una ciudad sin traducir
+   * en japones saldria dos veces. El orden es el del panel.
    */
-  const nombresPorClave = useMemo(() => {
+  const ciudades = useMemo(() => {
     const mapa = new Map();
 
     for (const tour of tours) {
       if (!tour.ciudadClave) continue;
-      if (!mapa.has(tour.ciudadClave) && tour.ciudad) {
-        mapa.set(tour.ciudadClave, tour.ciudad);
+      const tematicaValida = tematicaFiltro === 'todas' || tour.tematica === tematicaFiltro;
+
+      if (!mapa.has(tour.ciudadClave)) {
+        mapa.set(tour.ciudadClave, { clave: tour.ciudadClave, nombre: tour.ciudad, total: 0 });
       }
+      if (tematicaValida) mapa.get(tour.ciudadClave).total += 1;
     }
 
-    return mapa;
-  }, [tours]);
+    return [...mapa.values()];
+  }, [tours, tematicaFiltro]);
 
-  // Las ciudades van en el orden en que las deja el panel, no alfabetico:
-  // es el mismo orden de los grupos de abajo, y asi los chips los anticipan.
-  const ciudadesDisponibles = useMemo(
-    () => [...nombresPorClave.entries()].map(([clave, nombre]) => ({ clave, nombre })),
-    [nombresPorClave]
-  );
+  const tematicas = useMemo(() => {
+    const mapa = new Map();
 
-  const tematicasDisponibles = useMemo(
-    () => [...new Set(tours.map((tour) => tour.tematica).filter(Boolean))].sort(),
-    [tours]
-  );
+    for (const tour of tours) {
+      if (!tour.tematica) continue;
+      const ciudadValida = ciudadFiltro === 'todas' || tour.ciudadClave === ciudadFiltro;
+      mapa.set(tour.tematica, (mapa.get(tour.tematica) || 0) + (ciudadValida ? 1 : 0));
+    }
 
-  const toursFiltrados = useMemo(
+    return [...mapa.entries()].map(([nombre, total]) => ({ nombre, total })).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  }, [tours, ciudadFiltro]);
+
+  const filtrados = useMemo(
     () => tours.filter((tour) => {
       const coincideCiudad = ciudadFiltro === 'todas' || tour.ciudadClave === ciudadFiltro;
       const coincideTematica = tematicaFiltro === 'todas' || tour.tematica === tematicaFiltro;
@@ -102,24 +99,6 @@ export default function PaginaTours({ variante = 'todos' }) {
     [tours, ciudadFiltro, tematicaFiltro]
   );
 
-  // ── Agrupacion por clave de ciudad, respetando el orden de llegada ──
-  const grupos = useMemo(() => {
-    const mapa = new Map();
-
-    for (const tour of toursFiltrados) {
-      const clave = tour.ciudadClave || 'otros';
-
-      if (!mapa.has(clave)) {
-        mapa.set(clave, { clave, nombre: nombresPorClave.get(clave) || tour.ciudad || 'Otros', tours: [] });
-      }
-
-      mapa.get(clave).tours.push(tour);
-    }
-
-    return [...mapa.values()];
-  }, [toursFiltrados, nombresPorClave]);
-
-  // ── Abrir el tour que venga en la direccion (?tour=) ──
   useEffect(() => {
     if (!tourEnDireccion || tours.length === 0) return;
 
@@ -134,11 +113,6 @@ export default function PaginaTours({ variante = 'todos' }) {
     setParametros(nuevos, { replace: nombre === 'tour' });
   }
 
-  function elegirCiudad(clave) {
-    cambiarParametro('ciudad', clave === 'todas' ? null : clave);
-  }
-
-  /** Al elegir un tour se guarda tambien en la direccion, para poder compartirla. */
   function elegirTour(tour) {
     setTourElegido(tour);
     cambiarParametro('tour', tour.id);
@@ -149,75 +123,81 @@ export default function PaginaTours({ variante = 'todos' }) {
     cambiarParametro('tour', null);
   }
 
+  const totalTematica = tours.filter((tour) => tematicaFiltro === 'todas' || tour.tematica === tematicaFiltro).length;
+
   return (
     <>
       <CabeceraPagina {...cabecera} kanji={KANJI_POR_VARIANTE[variante]} />
 
-      <section className="seccion">
-        {!cargando && !error && tours.length > 0 && (
-          <div className="filtros">
-            <div className="chips" role="group" aria-label={t.filtroTodasCiudades}>
-              <button type="button" aria-pressed={ciudadFiltro === 'todas'} onClick={() => elegirCiudad('todas')}>
-                {t.filtroTodasCiudades}
-              </button>
-              {ciudadesDisponibles.map((ciudad) => (
-                <button
-                  key={ciudad.clave}
-                  type="button"
-                  aria-pressed={ciudadFiltro === ciudad.clave}
-                  onClick={() => elegirCiudad(ciudad.clave)}
-                >
-                  {ciudad.nombre}
-                </button>
-              ))}
-            </div>
-
-            {/* La tematica solo aporta algo si hay mas de una en esta lista */}
-            {tematicasDisponibles.length > 1 ? (
-              <select
-                className="selector"
-                value={tematicaFiltro}
-                onChange={(evento) => setTematicaFiltro(evento.target.value)}
-                aria-label={t.filtroTodasTematicas}
-              >
-                <option value="todas">{t.filtroTodasTematicas}</option>
-                {tematicasDisponibles.map((tematica) => (
-                  <option key={tematica} value={tematica}>{tematica}</option>
-                ))}
-              </select>
-            ) : (
-              <span className="filtros-pista">{t.seleccionaTourAyuda}</span>
-            )}
-          </div>
-        )}
-
+      <section className="seccion catalogo">
         {cargando && <Cargando mensaje={t.cargandoTours} />}
         {error && <ErrorCarga mensaje={t.errorTours} alReintentar={recargar} />}
 
-        {!cargando && !error && grupos.length === 0 && <SinResultados mensaje={t.sinResultados} />}
+        {!cargando && !error && (
+          <>
+            <aside className="catalogo-filtros">
+              <div className="filtro-grupo" role="group" aria-label={t.etiquetaCiudad}>
+                <span className="filtro-titulo">{t.etiquetaCiudad}</span>
+                <button type="button" aria-pressed={ciudadFiltro === 'todas'} onClick={() => cambiarParametro('ciudad', null)}>
+                  {t.filtroTodasCiudades} <small>{totalTematica}</small>
+                </button>
+                {ciudades.map((ciudad) => (
+                  <button
+                    key={ciudad.clave}
+                    type="button"
+                    aria-pressed={ciudadFiltro === ciudad.clave}
+                    onClick={() => cambiarParametro('ciudad', ciudad.clave)}
+                    disabled={ciudad.total === 0}
+                  >
+                    {ciudad.nombre} <small>{ciudad.total}</small>
+                  </button>
+                ))}
+              </div>
 
-        {!cargando && !error && grupos.map((grupo) => (
-          <div key={grupo.clave} className="grupo">
-            <div className="grupo-cabeza revelar">
-              <h2>{grupo.nombre}</h2>
-              {KANJI_CIUDAD[grupo.clave] && <span className="grupo-kanji" aria-hidden="true">{KANJI_CIUDAD[grupo.clave]}</span>}
-              <span className="grupo-linea" aria-hidden="true" />
-              <small>{grupo.tours.length} {grupo.tours.length === 1 ? t.ciudadesTour : t.ciudadesTours}</small>
-            </div>
+              {tematicas.length > 1 && (
+                <div className="filtro-grupo" role="group" aria-label={t.etiquetaTematica}>
+                  <span className="filtro-titulo">{t.etiquetaTematica}</span>
+                  <button type="button" aria-pressed={tematicaFiltro === 'todas'} onClick={() => setTematicaFiltro('todas')}>
+                    {t.filtroTodasTematicas}
+                  </button>
+                  {tematicas.map((tematica) => (
+                    <button
+                      key={tematica.nombre}
+                      type="button"
+                      aria-pressed={tematicaFiltro === tematica.nombre}
+                      onClick={() => setTematicaFiltro(tematica.nombre)}
+                      disabled={tematica.total === 0}
+                    >
+                      {tematica.nombre} <small>{tematica.total}</small>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </aside>
 
-            <div className="rejilla rejilla-3">
-              {grupo.tours.map((tour) => (
-                <TarjetaTour
-                  key={tour.id}
-                  tour={tour}
-                  etiqueta={tour.tipo === 'gratuito' ? t.tourGratuito : t.tourPrivado}
-                  alElegir={elegirTour}
-                  seleccionada={tourElegido?.id === tour.id}
-                />
-              ))}
+            <div className="catalogo-resultados">
+              <p className="catalogo-cuenta" aria-live="polite">
+                <b>{filtrados.length}</b> {filtrados.length === 1 ? t.resultado : t.resultados}
+              </p>
+
+              {filtrados.length === 0 ? (
+                <SinResultados mensaje={t.sinResultados} />
+              ) : (
+                <div className="rejilla-catalogo">
+                  {filtrados.map((tour) => (
+                    <TarjetaTour
+                      key={tour.id}
+                      tour={tour}
+                      etiqueta={`${tour.ciudad} · ${tour.tipo === 'gratuito' ? t.tourGratuito : t.tourPrivado}`}
+                      alElegir={elegirTour}
+                      seleccionada={tourElegido?.id === tour.id}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          </>
+        )}
       </section>
 
       <LlamadaFinal />
@@ -228,7 +208,7 @@ export default function PaginaTours({ variante = 'todos' }) {
         clave={tourElegido?.id}
         titulo={tourElegido?.titulo}
         textoCerrar={t.cerrarDetalle}
-        ancha
+        variante="cajon"
       >
         {tourElegido && <DetalleTour tour={tourElegido} fechaConsulta={fechaConsulta} />}
       </VentanaDetalle>
