@@ -13,6 +13,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { usarBloqueoScroll } from '../ganchos/usarBloqueoScroll.js';
+import { IconoCruz } from './Iconos.jsx';
 
 /** Debe coincidir con la duracion de "salirVentana" en global.css. */
 const DURACION_SALIDA = 240;
@@ -24,6 +25,7 @@ export default function VentanaDetalle({
   titulo,
   children,
   textoCerrar = 'Cerrar',
+  ancha = false,  // la ficha de un tour lleva dos columnas y necesita mas sitio
 }) {
   const [montado, setMontado] = useState(abierto);
   const [saliendo, setSaliendo] = useState(false);
@@ -105,7 +107,7 @@ export default function VentanaDetalle({
       onClick={(evento) => { if (evento.target === evento.currentTarget) alCerrar(); }}
     >
       <div
-        className={`ventana${saliendo ? ' saliendo' : ''}`}
+        className={`ventana${ancha ? ' ventana-ancha' : ''}${saliendo ? ' saliendo' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-label={titulo || textoCerrar}
@@ -119,7 +121,7 @@ export default function VentanaDetalle({
           title={textoCerrar}
           ref={referenciaCerrar}
         >
-          <i className="fas fa-xmark" />
+          <IconoCruz tamano={22} />
         </button>
 
         {contenidoVisible.current}

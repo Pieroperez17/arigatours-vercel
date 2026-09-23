@@ -1,10 +1,16 @@
 /**
  * Pie de pagina, igual en todas las secciones publicas.
+ *
+ * Va sobre el rojo oscuro de la marca, con el logo en su version blanca: un
+ * pie claro despues de la banda rosa de llamada final se fundia con ella y
+ * la pagina no parecia terminar.
  */
 
 import { Link } from 'react-router-dom';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
-import { SITIO } from '../configuracion/sitio.js';
+import { SITIO, enlaceWhatsapp } from '../configuracion/sitio.js';
+import { IDIOMAS } from '../traducciones/textos.js';
+import { IconoFacebook, IconoInstagram, IconoTiktok } from './Iconos.jsx';
 
 export default function PiePagina() {
   const { t } = usarIdioma();
@@ -12,50 +18,52 @@ export default function PiePagina() {
 
   return (
     <footer className="pie">
-      <div className="pie-contenido">
-        <div className="pie-columna">
-          <h4>{SITIO.nombre}</h4>
+      <div className="pie-rejilla">
+        <div className="pie-marca">
+          <img src={SITIO.logoBlanco} alt={SITIO.nombre} width="220" height="88" loading="lazy" />
           <p>{t.pieDescripcion}</p>
 
           <div className="pie-redes">
             <a href={SITIO.redes.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
-              <i className="fab fa-facebook-f" />
+              <IconoFacebook tamano={18} />
             </a>
             <a href={SITIO.redes.instagram} target="_blank" rel="noreferrer" aria-label="Instagram">
-              <i className="fab fa-instagram" />
+              <IconoInstagram tamano={18} />
             </a>
             <a href={SITIO.redes.tiktok} target="_blank" rel="noreferrer" aria-label="TikTok">
-              <i className="fab fa-tiktok" />
+              <IconoTiktok tamano={18} />
             </a>
           </div>
         </div>
 
-        <div className="pie-columna">
-          <h4>{t.pieEnlaces}</h4>
-          <ul>
-            <li><Link to="/">{t.navInicio}</Link></li>
-            <li><Link to="/tours">{t.navDestinos}</Link></li>
-            <li><Link to="/tours-privados">{t.navToursPrivados}</Link></li>
-            <li><Link to="/free-walking-tours">{t.navFreeTours}</Link></li>
-            <li><Link to="/blogs">{t.navBlogs}</Link></li>
-            <li><Link to="/contacto">{t.navContacto}</Link></li>
-          </ul>
-        </div>
+        <div className="pie-columnas">
+          <div>
+            <span>{t.pieTours}</span>
+            <Link to="/tours">{t.navDestinos}</Link>
+            <Link to="/tours-privados">{t.navToursPrivados}</Link>
+            <Link to="/free-walking-tours">{t.navFreeTours}</Link>
+          </div>
 
-        <div className="pie-columna">
-          <h4>{t.navContacto}</h4>
-          <p><i className="far fa-envelope" /> {SITIO.correo}</p>
-          <p><i className="fas fa-phone" /> {SITIO.telefono}</p>
-          <p>
-            <a href={`https://wa.me/${SITIO.whatsapp}`} target="_blank" rel="noreferrer">
-              <i className="fab fa-whatsapp" /> WhatsApp
-            </a>
-          </p>
+          <div>
+            <span>{SITIO.nombre}</span>
+            <Link to="/">{t.navInicio}</Link>
+            <Link to="/quienes-somos">{t.navQuienesSomos}</Link>
+            <Link to="/blogs">{t.navBlogs}</Link>
+            <Link to="/contacto">{t.navContacto}</Link>
+          </div>
+
+          <div>
+            <span>{t.navContacto}</span>
+            <a href={`mailto:${SITIO.correo}`}>{SITIO.correo}</a>
+            <a href={`tel:+${SITIO.whatsapp}`}>{SITIO.telefono}</a>
+            <a href={enlaceWhatsapp(t.mensajeWhatsappGeneral)} target="_blank" rel="noreferrer">WhatsApp</a>
+          </div>
         </div>
       </div>
 
       <div className="pie-abajo">
-        <p>© {anio} {SITIO.nombre}. {t.pieDerechos}</p>
+        <span>© {anio} {SITIO.nombre}. {t.pieDerechos}</span>
+        <span>{IDIOMAS.map((elemento) => elemento.etiqueta).join(' · ')}</span>
       </div>
     </footer>
   );

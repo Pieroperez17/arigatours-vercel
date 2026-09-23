@@ -13,7 +13,10 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 
-export default function CarruselHorizontal({ titulo, entradilla, extra, children }) {
+import ConEnfasis from './ConEnfasis.jsx';
+import { IconoAnterior, IconoSiguiente } from './Iconos.jsx';
+
+export default function CarruselHorizontal({ titulo, entradilla, extra, clase = '', children }) {
   const pista = useRef(null);
   const [puedeIzquierda, setPuedeIzquierda] = useState(false);
   const [puedeDerecha, setPuedeDerecha] = useState(false);
@@ -82,11 +85,11 @@ export default function CarruselHorizontal({ titulo, entradilla, extra, children
   }
 
   return (
-    <section className="carrusel-seccion">
-      <header className="carrusel-cabecera">
+    <section className={`carrusel-seccion ${clase}`.trim()}>
+      <header className="carrusel-cabecera revelar">
         <div>
-          {entradilla && <span className="carrusel-entradilla">{entradilla}</span>}
-          <h2>{titulo}</h2>
+          {entradilla && <div className="entradilla">{entradilla}</div>}
+          <h2 className="titulo-seccion"><ConEnfasis texto={titulo} /></h2>
         </div>
         {extra}
       </header>
@@ -99,7 +102,7 @@ export default function CarruselHorizontal({ titulo, entradilla, extra, children
           aria-label="Ver anteriores"
           tabIndex={puedeIzquierda ? 0 : -1}
         >
-          ❮
+          <IconoAnterior tamano={22} />
         </button>
 
         <div
@@ -120,7 +123,7 @@ export default function CarruselHorizontal({ titulo, entradilla, extra, children
           aria-label="Ver siguientes"
           tabIndex={puedeDerecha ? 0 : -1}
         >
-          ❯
+          <IconoSiguiente tamano={22} />
         </button>
       </div>
     </section>
