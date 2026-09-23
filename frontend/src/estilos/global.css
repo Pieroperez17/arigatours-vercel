@@ -22,30 +22,38 @@
    ========================================= */
 :root {
   /*
-   * El rojo de marca es un granate, no el rojo puro de antes (#de1b22).
-   * A maxima saturacion competia con todo y leia como aviso de error; el
-   * granate mantiene el caracter japones (el rojo del urushi) y deja que
-   * los rosas de la paleta respiren.
+   * Los dos rojos de la paleta de marca. El principal es profundo y algo
+   * apagado (el rojo del urushi), no un rojo puro a maxima saturacion: asi
+   * no compite con todo ni se lee como aviso de error, y deja que los
+   * rosas respiren. El oscuro es su sombra, para hover y degradados.
    *
-   * El rojo vivo sobrevive en --rojo-precio, reservado al precio: es el
-   * unico dato que gana algo con ese golpe de atencion.
+   * --rojo-precio ya no guarda un rojo vivo aparte: los precios llevan el
+   * mismo rojo que el resto de la marca. La variable sigue existiendo
+   * porque nombra de que se tine el precio, y cambiarla aqui basta si
+   * algun dia vuelve a querer un tono propio.
    *
    * --rojo-rgb son los mismos componentes de --rojo sueltos, para poder
    * escribir rgba(var(--rojo-rgb), 0.3) en halos y sombras de color. CSS
    * no sabe sacar el alfa de un hex por si solo.
    */
-  --rojo: #8e1b2e;
-  --rojo-oscuro: #6d1322;
-  --rojo-rgb: 142, 27, 46;
-  --rojo-precio: #d81f2a;
+  --rojo: #9b1515;
+  --rojo-oscuro: #8f1414;
+  --rojo-rgb: 155, 21, 21;
+  --rojo-precio: #9b1515;
 
-  --rosa-navbar: #fbd2cf;
-  --rosa-sakura: #f690ab;
-  --rosa-claro: #fad3dc;
+  /*
+   * --rosa-navbar y --rosa-claro valen hoy lo mismo: la paleta trae un
+   * unico rosa de fondo. Siguen separadas porque nombran dos superficies
+   * distintas, la barra y los fondos de acento, y tenerlas sueltas es lo
+   * que permite recolorear una sin arrastrar la otra.
+   */
+  --rosa-navbar: #f8d7d7;
+  --rosa-sakura: #eea3a3;
+  --rosa-claro: #f8d7d7;
   --texto: #333333;
   --texto-suave: #666666;
   --blanco: #ffffff;
-  --fondo: #fdf8f5;
+  --fondo: #ffffff;
   --verde-whatsapp: #25d366;
   --borde: #e6e0dd;
 
@@ -77,8 +85,8 @@
    * densa se ve como un recorte pegado encima; dos capas suaves se leen
    * como profundidad real.
    *
-   * El tinte no es negro puro sino marron: sobre el fondo crema
-   * (--fondo) el gris neutro apaga el color y ensucia la pagina.
+   * El tinte no es negro puro sino marron: con la pagina en blanco y los
+   * rosas alrededor, un gris neutro apaga el color y ensucia la sombra.
    */
   --sombra-suave: 0 1px 2px rgba(61, 30, 26, 0.04),
     0 10px 28px rgba(61, 30, 26, 0.06);
@@ -1668,18 +1676,20 @@ button {
 }
 
 .aviso.exito { background: rgba(40, 167, 69, 0.18); border: 1px solid #28a745; color: #d8f5de; }
-.aviso.error { background: rgba(var(--rojo-rgb), 0.18); border: 1px solid var(--rojo); color: #ffd9da; }
+.aviso.error { background: rgba(var(--rojo-rgb), 0.18); border: 1px solid var(--rojo); color: var(--rosa-claro); }
 
 /* =========================================
    11. QUIENES SOMOS
    ========================================= */
+/*
+ * El texto va suelto sobre el fondo de la pagina, sin tarjeta blanca ni
+ * sombra que lo enmarque. Lo unico que lo sostiene es el ancho maximo: una
+ * linea de mas de unos 90 caracteres se lee mal, y sin caja el ancho es lo
+ * unico que impide que los parrafos crucen la pantalla entera.
+ */
 .texto-largo {
   max-width: 850px;
   margin: 0 auto;
-  background: var(--blanco);
-  padding: 3rem;
-  border-radius: 14px;
-  box-shadow: var(--sombra-suave);
 }
 
 .texto-largo p {
@@ -1689,7 +1699,56 @@ button {
   margin-bottom: 1.4rem;
 }
 
-.texto-largo p:last-child { margin-bottom: 0; }
+/* Cada parrafo va envuelto en un div junto a su foto, asi que el ultimo
+   parrafo ya no es el ultimo hijo directo del contenedor. */
+.texto-largo > :last-child p:last-child { margin-bottom: 0; }
+
+/*
+ * Fotos intercaladas entre los parrafos, alineadas al mismo ancho que el
+ * texto. Conservan la sombra propia: sin ella, y sin caja alrededor, una
+ * foto clara acabaria difuminandose contra el fondo crema.
+ */
+.foto-relato {
+  margin: 2.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--sombra-media);
+}
+
+/* Sin proporcion impuesta: una foto sola se muestra entera, con la forma
+   con la que se tomo. Recortarla a 16/9 se comia cabezas en las verticales
+   y el techo del mercado en la panoramica del selfie. */
+.foto-relato img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.6s ease;
+}
+
+.foto-relato:hover img { transform: scale(1.04); }
+
+/*
+ * Fotos que comparten fila. Las columnas se generan solas (auto-flow), asi
+ * que la misma regla vale para dos o para tres sin tocar el CSS al anadir
+ * una foto mas al bloque.
+ */
+.foto-relato-grupo {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.foto-relato-grupo .foto-relato { margin: 0; }
+
+/* Aqui si conviene igualar la proporcion: en una misma fila, alturas
+   distintas dejan huecos bajo las fotos mas cortas. */
+.foto-relato-grupo .foto-relato img {
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+}
 
 /* =========================================
    12. PIE DE PAGINA
@@ -1713,20 +1772,16 @@ button {
 .pie-columna { flex: 1; min-width: 240px; }
 
 /*
- * Los titulos del pie llevan un rojo mas vivo que el granate de la marca.
- * Sobre el fondo oscuro del pie, --rojo (#8e1b2e) se hunde: queda en 1.41:1
- * de contraste, practicamente ilegible.
+ * Los titulos del pie van en el rosa de la paleta, no en el rojo. Sobre el
+ * fondo oscuro del pie cualquier rojo de marca se hunde: --rojo se queda en
+ * 1.5:1 de contraste, practicamente ilegible.
  *
- * Este sube a 1.95:1, que se lee mejor pero sigue lejos del 4.5:1 que pide
- * la norma. Y aplica ese umbral, no el 3:1 de texto grande: son 20 px en
- * peso 400, y para contar como grande harian falta 24 px o negrita.
- *
- * Se deja asi porque es una decision de marca tomada a proposito, no un
- * descuido. Si algun dia prima la legibilidad, #ff6b6b llega a 4.5:1 sobre
- * este mismo fondo sin dejar de ser rojo.
+ * El rosa sube a 6.3:1, que pasa de sobra el 4.5:1 que pide la norma. Y
+ * aplica ese umbral, no el 3:1 de texto grande: son 20 px en peso 400, y
+ * para contar como grande harian falta 24 px o negrita.
  */
 .pie-columna h4 {
-  color: #bf0125;
+  color: var(--rosa-sakura);
   margin-bottom: 1.4rem;
   font-size: 1.25rem;
 }
@@ -1841,7 +1896,7 @@ button {
 
   .navegacion-lista > li {
     width: 100%;
-    border-bottom: 1px solid #e8d5d5;
+    border-bottom: 1px solid var(--rosa-claro);
   }
 
   .navegacion-lista a,
@@ -1882,7 +1937,7 @@ button {
     font-size: 0.93rem;
     color: #444;
     padding: 0.55rem 0.5rem;
-    border-bottom: 1px solid #f0e0e0;
+    border-bottom: 1px solid var(--rosa-claro);
   }
 
   .desplegable-menu a:last-child { border-bottom: none; }
@@ -1919,7 +1974,9 @@ button {
   .zona-detalle { padding: 1.25rem; }
   .detalle-tour { padding: 1.25rem; }
   .articulo { padding: 1.5rem; }
-  .texto-largo { padding: 1.75rem; }
+  /* En una columna estrecha, dos o tres verticales lado a lado dejan las
+     caras del tamano de un sello. Apiladas se siguen reconociendo. */
+  .foto-relato-grupo { grid-auto-flow: row; gap: 1.25rem; }
   .portada-flecha { display: none; }
   .contacto-columnas { flex-direction: column; gap: 2.5rem; }
   .contacto-info h2 { font-size: 2rem; }
@@ -1968,9 +2025,10 @@ button {
   padding: 2rem 1.5rem 1.5rem;
   border: 1px solid var(--borde);
   border-radius: 1.25rem;
-  /* Crema arriba y rosado abajo, para que el torii y la pagoda del fondo
-     se apoyen en un cielo y no floten sobre blanco. */
-  background: linear-gradient(170deg, #fffaf6 0%, #fdeee9 55%, #fbdfe2 100%);
+  /* Blanco arriba y rosado abajo, para que el torii y la pagoda del fondo
+     se apoyen en un cielo y no floten sobre plano. El tono de en medio es
+     la mezcla de los dos extremos, para que el degradado no de un salto. */
+  background: linear-gradient(170deg, var(--blanco) 0%, #fbebeb 55%, var(--rosa-claro) 100%);
   box-shadow: var(--sombra-media);
   text-align: center;
   /* El fondo decorativo llega hasta el borde: aqui se recorta a la curva. */
@@ -1999,7 +2057,7 @@ button {
 
 .socio-fondo-tallo {
   fill: none;
-  stroke: #b9776a;
+  stroke: var(--rojo-oscuro);
   stroke-width: 2.4;
   stroke-linecap: round;
   opacity: 0.5;
@@ -2011,7 +2069,7 @@ button {
 }
 
 .socio-fondo-centro {
-  fill: #f5a3a3;
+  fill: var(--rosa-sakura);
   opacity: 0.75;
 }
 
@@ -2354,7 +2412,7 @@ button {
 
 .seccion-resenas {
   padding: 4rem 5%;
-  background: linear-gradient(180deg, #fff8f6 0%, #fde9ec 100%);
+  background: linear-gradient(180deg, var(--blanco) 0%, var(--rosa-claro) 100%);
 }
 
 .seccion-resenas .encabezado-seccion {
@@ -2369,18 +2427,43 @@ button {
   color: var(--rojo);
 }
 
-.rejilla-resenas {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+/*
+ * La cinta se sale del ancho maximo a proposito: las tarjetas tienen que
+ * entrar y salir por el borde de la pantalla, no por el de una caja centrada.
+ * Las mascaras de los lados las desvanecen en lugar de cortarlas en seco.
+ */
+.cinta-resenas {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.cinta-resenas-pista {
+  display: flex;
   gap: 1.4rem;
-  max-width: 1400px;
-  margin-inline: auto;
+  width: max-content;
+  /* 9s por resena mantiene el ritmo igual haya cinco o quince. */
+  animation: desfile-resenas calc(var(--total-resenas) * 9s) linear infinite;
+}
+
+.cinta-resenas:hover .cinta-resenas-pista { animation-play-state: paused; }
+
+@keyframes desfile-resenas {
+  from { transform: translateX(0); }
+  /* La mitad del recorrido es justo el primer bloque de tarjetas. */
+  to { transform: translateX(calc(-50% - 0.7rem)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinta-resenas { overflow-x: auto; }
+  .cinta-resenas-pista { animation: none; }
 }
 
 .resena {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+  flex: 0 0 clamp(260px, 25vw, 330px);
   margin: 0;
   padding: 1.6rem 1.5rem;
   border-radius: 1rem;

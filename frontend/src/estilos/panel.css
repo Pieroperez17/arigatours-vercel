@@ -145,7 +145,7 @@
 }
 
 .panel-aviso.exito { background: #e8f6ec; border: 1px solid #28a745; color: #1c6b2e; }
-.panel-aviso.error { background: #fdeaea; border: 1px solid var(--rojo); color: #9c1017; }
+.panel-aviso.error { background: #fdeaea; border: 1px solid var(--rojo); color: var(--rojo); }
 
 /* ── Tabla ── */
 .panel-tabla-envoltura {
@@ -574,8 +574,10 @@
   border-radius: 0.4rem;
 }
 
+/* El hover se tine de rosa y no de --fondo: ahora que la pagina es blanca,
+   un fondo blanco sobre la tarjeta blanca no se veria. */
 .compartir-cerrar:hover {
-  background: var(--fondo);
+  background: var(--rosa-claro);
   color: var(--rojo);
 }
 
