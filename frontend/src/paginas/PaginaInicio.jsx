@@ -4,7 +4,7 @@
  * Se lee como una revista: una portada a pantalla completa, el manifiesto de
  * la agencia con tres cifras reales (sacadas de la base, no escritas a
  * mano), un indice de ciudades, tres tours contados en grande, los
- * principios sobre fondo oscuro, el recorrido en tres pasos, una resena de
+ * principios sobre fondo carmesi, el recorrido en tres pasos, una resena de
  * cada vez, el diario y una foto para cerrar.
  */
 

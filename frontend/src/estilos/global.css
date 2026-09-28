@@ -510,12 +510,12 @@ main.bajo-cabecera { padding-top: 0; }
   display: flex;
   align-items: center;
   gap: 16px;
+  border: none;
 }
 
 .selector-idioma {
   padding: 6px 2px;
   border: 0;
-  border-bottom: 1px solid currentColor;
   background: transparent;
   color: inherit;
   font-family: var(--fuente);
@@ -1191,30 +1191,37 @@ main.bajo-cabecera { padding-top: 0; }
 }
 
 /* =========================================
-   9. PRINCIPIOS (FONDO OSCURO)
+   9. PRINCIPIOS (FONDO CARMESI)
    ========================================= */
+/* Esta seccion lleva su propia paleta, sacada de los colores del logo. */
 .principios {
+  --principios-fondo: #bf0127;
+  --principios-acento: #efc1ca;
+  --principios-numero: #ec898b;
+  --principios-linea: #cf455d;
+
   padding: clamp(80px, 10vw, 150px) var(--margen);
   color: #fff;
-  background: var(--tinta);
+  background: var(--principios-fondo);
 }
 
-.principios em { color: var(--rosa-sakura); }
+.principios .entradilla-clara,
+.principios em { color: var(--principios-acento); }
 
 .principios-rejilla {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid rgba(248, 215, 215, 0.2);
+  border-top: 1px solid var(--principios-linea);
 }
 
 .principio {
   padding: 48px 0;
-  border-bottom: 1px solid rgba(248, 215, 215, 0.2);
+  border-bottom: 1px solid var(--principios-linea);
 }
 
 .principio:nth-child(odd) {
   padding-right: clamp(24px, 4vw, 56px);
-  border-right: 1px solid rgba(248, 215, 215, 0.2);
+  border-right: 1px solid var(--principios-linea);
 }
 
 .principio:nth-child(even) { padding-left: clamp(24px, 4vw, 56px); }
@@ -1227,7 +1234,7 @@ main.bajo-cabecera { padding-top: 0; }
   font-size: clamp(64px, 7vw, 112px);
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(238, 163, 163, 0.75);
+  -webkit-text-stroke: 1px var(--principios-numero);
 }
 
 .principio h3 {
@@ -1239,7 +1246,7 @@ main.bajo-cabecera { padding-top: 0; }
   max-width: 440px;
   font-size: 16px;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 @media (max-width: 760px) {
