@@ -1,12 +1,9 @@
 /**
  * Ventana emergente (modal) donde se muestra el detalle de lo seleccionado.
  *
- * Tiene dos formas, segun lo que se abre:
- *   · cajon  → entra por la derecha y ocupa el alto de la pantalla. Para la
- *              ficha de un tour: se sigue viendo el listado a la izquierda,
- *              y eso ayuda a no perder el sitio al comparar.
- *   · lector → sube desde abajo y ocupa la pantalla entera. Para leer un
- *              articulo sin nada alrededor que distraiga.
+ * Sube desde abajo y ocupa la pantalla entera, como una pagina mas: asi se
+ * abren la ficha de un tour y los articulos del diario, sin nada alrededor
+ * que distraiga.
  *
  * El truco para poder animar la SALIDA es no desmontar la ventana de
  * inmediato: se mantiene en el DOM ("montado") mientras se reproduce la
@@ -32,7 +29,6 @@ export default function VentanaDetalle({
   titulo,
   children,
   textoCerrar = 'Cerrar',
-  variante = 'cajon',
 }) {
   const [montado, setMontado] = useState(abierto);
   const [saliendo, setSaliendo] = useState(false);
@@ -110,11 +106,11 @@ export default function VentanaDetalle({
 
   return (
     <div
-      className={`ventana-fondo ventana-fondo-${variante}${saliendo ? ' saliendo' : ''}`}
+      className={`ventana-fondo${saliendo ? ' saliendo' : ''}`}
       onClick={(evento) => { if (evento.target === evento.currentTarget) alCerrar(); }}
     >
       <div
-        className={`ventana ventana-${variante}${saliendo ? ' saliendo' : ''}`}
+        className={`ventana${saliendo ? ' saliendo' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-label={titulo || textoCerrar}

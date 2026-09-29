@@ -147,7 +147,6 @@ export default function PaginaBlogs() {
         clave={articuloElegido?.id}
         titulo={articuloElegido?.titulo}
         textoCerrar={t.cerrarDetalle}
-        variante="lector"
       >
         {articuloElegido && <Articulo articulo={articuloElegido} />}
       </VentanaDetalle>

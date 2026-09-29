@@ -208,7 +208,6 @@ export default function PaginaTours({ variante = 'todos' }) {
         clave={tourElegido?.id}
         titulo={tourElegido?.titulo}
         textoCerrar={t.cerrarDetalle}
-        variante="cajon"
       >
         {tourElegido && <DetalleTour tour={tourElegido} fechaConsulta={fechaConsulta} />}
       </VentanaDetalle>

@@ -4,7 +4,7 @@
    Una direccion editorial y cinematografica: portada a pantalla completa,
    tipografia japonesa (Shippori Mincho para titulos, Zen Kaku Gothic para
    el texto), tinta oscura alternando con blanco, fotos que se descubren con
-   un recorte y la ficha de cada tour en un cajon lateral. La paleta es la
+   un recorte y la ficha de cada tour a pantalla completa. La paleta es la
    misma de la marca; cambia la proporcion: mas tinta, el rojo como acento.
 
     1. Variables y base
@@ -22,7 +22,7 @@
    13. Llamada final
    14. Portadilla de las paginas interiores
    15. Catalogo de tours y tarjetas
-   16. Ventanas: cajon y lector
+   16. Ventanas
    17. Ficha del tour
    18. Revista (blog) y articulo
    19. Quienes somos
@@ -2023,7 +2023,7 @@ main.bajo-cabecera { padding-top: 0; }
 }
 
 /* =========================================
-   16. VENTANAS: CAJON Y LECTOR
+   16. VENTANAS
    ========================================= */
 .ventana-fondo {
   position: fixed;
@@ -2038,46 +2038,24 @@ main.bajo-cabecera { padding-top: 0; }
 /* Debe durar lo mismo que DURACION_SALIDA en VentanaDetalle.jsx (320 ms). */
 .ventana-fondo.saliendo { animation: fundidoSale 0.32s ease both; }
 
+/* Ocupa la pantalla entera y sube desde abajo, como una pagina mas. */
 .ventana {
   position: absolute;
+  inset: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   background: #fff;
+  animation: ventanaEntra 0.65s var(--curva) both;
 }
 
-.ventana-cajon {
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: min(780px, 100%);
-  box-shadow: -30px 0 80px -30px rgba(20, 12, 12, 0.55);
-  animation: cajonEntra 0.6s var(--curva) both;
-}
+.ventana.saliendo { animation: ventanaSale 0.32s ease-in both; }
 
-.ventana-cajon.saliendo { animation: cajonSale 0.32s ease-in both; }
-
-@keyframes cajonEntra {
-  from { transform: translateX(100%); }
-  to { transform: none; }
-}
-
-@keyframes cajonSale {
-  to { transform: translateX(100%); }
-}
-
-.ventana-lector {
-  inset: 0;
-  animation: lectorEntra 0.65s var(--curva) both;
-}
-
-.ventana-lector.saliendo { animation: lectorSale 0.32s ease-in both; }
-
-@keyframes lectorEntra {
+@keyframes ventanaEntra {
   from { opacity: 0; transform: translateY(8%); }
   to { opacity: 1; transform: none; }
 }
 
-@keyframes lectorSale {
+@keyframes ventanaSale {
   to { opacity: 0; transform: translateY(6%); }
 }
 
@@ -2116,16 +2094,28 @@ main.bajo-cabecera { padding-top: 0; }
 /* =========================================
    17. FICHA DEL TOUR
    ========================================= */
+/* Dos columnas: la ficha y, fija al lado, la caja de reserva. El relleno de
+   arriba deja sitio al boton de cerrar, pegado en la esquina. */
 .ficha {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 96px var(--margen);
+}
+
+.ficha-titulo {
+  margin: 18px 0 32px;
+  font-size: clamp(38px, 4.6vw, 68px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 .ficha-galeria {
   position: relative;
-  flex-shrink: 0;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--rosa-claro);
 }
@@ -2180,82 +2170,42 @@ main.bajo-cabecera { padding-top: 0; }
   color: var(--tinta);
 }
 
-.ficha-cuerpo {
-  flex: 1;
-  padding: 36px clamp(24px, 4vw, 48px) 32px;
+/* Tres datos clave en una tira con bordes. */
+.ficha-hechos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 32px;
+  border: 1px solid var(--rosa-claro);
 }
 
-.ficha-cuerpo > h2 {
-  margin: 14px 0 22px;
-  font-size: clamp(30px, 3.4vw, 46px);
-  line-height: 1.12;
-}
-
-.ficha-datos {
-  list-style: none;
+.ficha-hechos div {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border-right: 1px solid var(--rosa-claro);
 }
 
-.ficha-datos li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  font-size: 14px;
-  color: var(--texto);
-  background: var(--fondo-rosado);
-  border-radius: 999px;
-}
+.ficha-hechos div:last-child { border-right: 0; }
 
-.ficha-datos svg { color: var(--rojo); }
-
-/* Indice interno: se queda arriba al bajar por la ficha. Deja sitio a la
-   derecha para el boton de cerrar, que tambien va pegado arriba. */
-.ficha-indice {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  display: flex;
-  gap: 24px;
-  margin: 28px calc(-1 * clamp(24px, 4vw, 48px)) 0;
-  padding: 18px 88px 16px clamp(24px, 4vw, 48px);
-  overflow-x: auto;
-  background: rgba(255, 255, 255, 0.97);
-  border-bottom: 1px solid var(--rosa-claro);
-  scrollbar-width: none;
-}
-
-.ficha-indice button {
-  padding: 4px 0;
-  font: inherit;
-  font-size: 12px;
+.ficha-hechos dt {
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--texto-suave);
-  background: none;
-  border: 0;
-  border-bottom: 1px solid transparent;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
-}
-
-.ficha-indice button:hover {
   color: var(--rojo);
-  border-color: var(--rojo);
 }
 
-.ficha-seccion {
-  padding-top: 36px;
-  scroll-margin-top: 72px;
+.ficha-hechos dd {
+  font-family: var(--fuente-titulos);
+  font-size: 22px;
+  color: var(--tinta);
 }
 
-.ficha-seccion h3 {
-  margin-bottom: 16px;
-  font-size: 26px;
+.ficha-apartado h3 {
+  margin: 44px 0 16px;
+  font-size: clamp(28px, 2.6vw, 36px);
+  color: var(--rojo);
 }
 
 .texto-descripcion {
@@ -2274,41 +2224,31 @@ main.bajo-cabecera { padding-top: 0; }
 .inclusiones {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 28px;
-}
-
-.inclusiones h4 {
-  margin-bottom: 12px;
-  font-family: var(--fuente);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--texto-suave);
+  gap: 32px;
 }
 
 .marcas {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .marcas li {
   display: flex;
   gap: 12px;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   color: var(--texto);
 }
 
 .marcas svg {
   flex-shrink: 0;
-  margin-top: 3px;
+  margin-top: 4px;
   color: var(--rojo);
 }
 
-.marcas-no svg { color: var(--texto-suave); }
+.marcas-no svg { color: #b98a8a; }
 
 .marcas .marcas-vacia { color: var(--texto-suave); }
 
@@ -2320,8 +2260,7 @@ main.bajo-cabecera { padding-top: 0; }
   font-size: 16px;
   line-height: 1.6;
   color: var(--texto);
-  background: var(--fondo-rosado);
-  border-radius: 8px;
+  border: 1px solid var(--rosa-claro);
 }
 
 .punto-encuentro svg {
@@ -2330,73 +2269,153 @@ main.bajo-cabecera { padding-top: 0; }
   color: var(--rojo);
 }
 
-/* Barra de reserva: siempre a mano al pie del cajon. */
-.ficha-barra {
+/* Caja de reserva: sigue a la vista mientras se baja por la ficha. */
+.ficha-reserva {
   position: sticky;
-  bottom: 0;
-  z-index: 3;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 170px auto;
-  gap: 16px;
-  align-items: end;
-  padding: 18px clamp(24px, 4vw, 48px) calc(18px + env(safe-area-inset-bottom, 0px));
+  top: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px;
   background: #fff;
-  border-top: 1px solid var(--rosa-claro);
-  box-shadow: 0 -14px 30px -20px rgba(20, 12, 12, 0.3);
+  border: 1px solid var(--rosa-sakura);
 }
 
-.ficha-precio span,
-.ficha-fecha span {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+.ficha-reserva-etiqueta {
+  font-size: 13px;
   color: var(--texto-suave);
 }
 
-.ficha-precio b {
+.ficha-reserva-precio b {
   display: block;
   font-family: var(--fuente-titulos);
-  font-size: 19px;
+  font-size: 52px;
   font-weight: 500;
-  line-height: 1.3;
+  line-height: 1;
   color: var(--rojo);
 }
 
-.ficha-fecha input {
+/* Un precio sin cifra ("Basado en propinas") no cabe al tamano grande. */
+.ficha-reserva-precio-texto b {
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.ficha-reserva-precio small {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--texto-suave);
+}
+
+.ficha-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ficha-campo > span {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rojo);
+}
+
+.ficha-campo input {
   width: 100%;
-  height: 48px;
-  padding: 0 12px;
+  min-height: 56px;
+  padding: 0 18px;
   font: inherit;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--tinta);
   background: #fff;
   border: 1px solid var(--rosa-sakura);
-  border-radius: 10px;
+  border-radius: 0;
 }
 
-.ficha-fecha input:focus {
+.ficha-campo input:focus {
   outline: none;
   border-color: var(--rojo);
 }
 
-.ficha-barra .boton { min-height: 48px; }
+.ficha-grupos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.ficha-grupos button {
+  min-height: 48px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--rojo);
+  background: #fff;
+  border: 1px solid var(--rosa-sakura);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.ficha-grupos button:hover { border-color: var(--rojo); }
+
+.ficha-grupos button[aria-pressed='true'] {
+  color: #fff;
+  background: var(--rojo);
+  border-color: var(--rojo);
+}
+
+.ficha-reserva-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 0 24px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--rojo);
+  border: 1px solid var(--rojo);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.ficha-reserva-boton:hover { background: var(--rojo-oscuro); }
+.ficha-reserva-boton:active { transform: scale(0.98); }
+
+.ficha-reserva-nota {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--texto-suave);
+}
+
+@media (max-width: 1080px) {
+  .ficha { grid-template-columns: minmax(0, 1fr) 360px; }
+}
+
+/* En estrecho la caja de reserva pasa debajo de la ficha. */
+@media (max-width: 900px) {
+  .ficha { grid-template-columns: minmax(0, 1fr); }
+  .ficha-reserva { position: static; }
+}
 
 @media (max-width: 640px) {
-  .ficha-barra { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .ficha-precio { grid-column: 1 / -1; }
+  .ficha { padding: 80px 20px 64px; }
 
-  /* En media barra no cabe "Reservar por WhatsApp" en una linea. */
-  .ficha-barra .boton {
-    padding: 6px 14px;
-    line-height: 1.2;
-    white-space: normal;
-    text-align: center;
+  .ficha-hechos div { padding: 14px 12px; }
+  .ficha-hechos dd { font-size: 18px; }
+
+  .inclusiones {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
   }
 
-  .inclusiones { grid-template-columns: minmax(0, 1fr); }
+  .ficha-reserva { padding: 24px 20px; }
+  .ficha-reserva-precio b { font-size: 44px; }
 }
 
 /* =========================================
