@@ -2323,8 +2323,15 @@ main.bajo-cabecera { padding-top: 0; }
   color: var(--rojo);
 }
 
+/*
+ * Safari de iPhone pinta la fecha con su control nativo, que tiene un ancho
+ * minimo propio y se salia de la caja. Sin la apariencia nativa y con
+ * min-width 0 respeta el 100 % como cualquier otro campo.
+ */
 .ficha-campo input {
+  display: block;
   width: 100%;
+  min-width: 0;
   min-height: 56px;
   padding: 0 18px;
   font: inherit;
@@ -2333,7 +2340,12 @@ main.bajo-cabecera { padding-top: 0; }
   background: #fff;
   border: 1px solid var(--rosa-sakura);
   border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
 }
+
+/* En iPhone la fecha elegida sale centrada; aqui va a la izquierda. */
+.ficha-campo input::-webkit-date-and-time-value { text-align: left; }
 
 .ficha-campo input:focus {
   outline: none;
