@@ -43,12 +43,12 @@ export const SITIO = {
   /*
    * Se escribe "+81 70-..." y no "+81 070-...", que es como se marca dentro
    * de Japon: al anteponer el prefijo del pais, el cero inicial del movil se
-   * cae. Dejandolo, wa.me recibiria 8107090975476 y no abriria ningun chat.
+   * cae. Dejandolo, wa.me recibiria 8107038606139 y no abriria ningun chat.
    */
-  telefono: '+81 70-9097-5476',
+  telefono: '+81 70-3860-6139',
 
   // Numero de WhatsApp en formato internacional, solo digitos.
-  whatsapp: '817090975476',
+  whatsapp: '817038606139',
 
   redes: {
     facebook: 'https://facebook.com/',
