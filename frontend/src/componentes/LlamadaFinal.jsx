@@ -10,6 +10,7 @@ import ConEnfasis from './ConEnfasis.jsx';
 import { IconoChat } from './Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { enlaceWhatsapp, recurso } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 
 export default function LlamadaFinal() {
   const { t } = usarIdioma();
@@ -34,6 +35,7 @@ export default function LlamadaFinal() {
             href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
             target="_blank"
             rel="noreferrer"
+            onClick={reportarClicWhatsapp}
           >
             <IconoChat tamano={18} /> {t.reservarWhatsapp}
           </a>

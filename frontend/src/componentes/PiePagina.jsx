@@ -12,7 +12,9 @@ import { Link } from 'react-router-dom';
 import { IconoFlecha } from './Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { SITIO, enlaceWhatsapp } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 import { IDIOMAS } from '../traducciones/textos.js';
+import { EVENTO_ABRIR_COOKIES } from '../servicios/seguimiento.js';
 
 export default function PiePagina() {
   const { t } = usarIdioma();
@@ -30,6 +32,7 @@ export default function PiePagina() {
             href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
             target="_blank"
             rel="noreferrer"
+            onClick={reportarClicWhatsapp}
           >
             {t.hablamos} <IconoFlecha tamano={40} grosor={1} />
           </a>
@@ -58,7 +61,7 @@ export default function PiePagina() {
           <span>{t.navContacto}</span>
           <a href={`mailto:${SITIO.correo}`}>{SITIO.correo}</a>
           <a href={`tel:+${SITIO.whatsapp}`}>{SITIO.telefono}</a>
-          <a href={enlaceWhatsapp(t.mensajeWhatsappGeneral)} target="_blank" rel="noreferrer">WhatsApp</a>
+          <a href={enlaceWhatsapp(t.mensajeWhatsappGeneral)} target="_blank" rel="noreferrer" onClick={reportarClicWhatsapp}>WhatsApp</a>
         </div>
 
         <div>
@@ -74,6 +77,13 @@ export default function PiePagina() {
       <div className="pie-abajo">
         <span>© {anio} {SITIO.nombre}. {t.pieDerechos}</span>
         <span>{IDIOMAS.map((elemento) => elemento.etiqueta).join(' · ')}</span>
+        <button
+          type="button"
+          className="pie-arriba"
+          onClick={() => window.dispatchEvent(new Event(EVENTO_ABRIR_COOKIES))}
+        >
+          {t.cookiesEnlace}
+        </button>
         <button
           type="button"
           className="pie-arriba"

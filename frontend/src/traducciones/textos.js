@@ -150,6 +150,14 @@ export const TEXTOS = {
     portadaTexto: 'Tours privados con guías locales que te explican Japón en tu idioma. Tú eliges el ritmo; nosotros, los rincones.',
     reservar: 'Reservar',
     reservarWhatsapp: 'Reservar por WhatsApp',
+
+    // ── Aviso de cookies ──
+    cookiesTitulo: 'Cookies',
+    cookiesTexto: 'Usamos cookies de Google para medir la publicidad y mostrarte anuncios relevantes. Puedes aceptarlas o rechazarlas; la web funciona igual.',
+    cookiesRechazar: 'Rechazar',
+    cookiesAceptar: 'Aceptar',
+    cookiesEnlace: 'Cookies',
+
     verTours: 'Ver tours',
     confianzaResenas: '5.0 en Tripadvisor',
     confianzaGuias: 'Guías locales en Japón',
@@ -354,6 +362,14 @@ export const TEXTOS = {
     portadaTexto: 'Private tours with local guides who explain Japan in your language. You set the pace; we find the corners.',
     reservar: 'Book',
     reservarWhatsapp: 'Book on WhatsApp',
+
+    // ── Aviso de cookies ──
+    cookiesTitulo: 'Cookies',
+    cookiesTexto: 'We use Google cookies to measure our advertising and show you relevant ads. You can accept or reject them; the site works the same either way.',
+    cookiesRechazar: 'Reject',
+    cookiesAceptar: 'Accept',
+    cookiesEnlace: 'Cookies',
+
     verTours: 'See tours',
     confianzaResenas: '5.0 on Tripadvisor',
     confianzaGuias: 'Local guides in Japan',
@@ -557,6 +573,14 @@ export const TEXTOS = {
     portadaTexto: 'あなたの言語で日本を案内する、地元ガイドのプライベートツアー。ペースはあなたが、特別な場所は私たちが。',
     reservar: '予約',
     reservarWhatsapp: 'WhatsAppで予約',
+
+    // ── Aviso de cookies ──
+    cookiesTitulo: 'Cookieについて',
+    cookiesTexto: '広告の効果測定と関連性の高い広告の表示のため、GoogleのCookieを使用しています。同意するか拒否するかを選べます。どちらでもサイトは同じようにご利用いただけます。',
+    cookiesRechazar: '拒否する',
+    cookiesAceptar: '同意する',
+    cookiesEnlace: 'Cookie設定',
+
     verTours: 'ツアーを見る',
     confianzaResenas: 'Tripadvisorで5.0',
     confianzaGuias: '日本在住のローカルガイド',

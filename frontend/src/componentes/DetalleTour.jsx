@@ -26,6 +26,7 @@ import {
 } from './Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { enlaceWhatsapp } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 
 const GRUPOS = ['1–3', '4–6', '7–9', '10+'];
 
@@ -104,6 +105,7 @@ export default function DetalleTour({ tour, fechaConsulta }) {
 
     if (grupo && !esGratuito) mensaje += `, ${t.mensajeWhatsappGrupo.replace('{grupo}', grupo)}`;
 
+    reportarClicWhatsapp();
     window.open(enlaceWhatsapp(`${mensaje}.`), '_blank', 'noopener');
   }
 

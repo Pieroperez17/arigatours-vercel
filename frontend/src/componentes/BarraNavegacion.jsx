@@ -19,6 +19,7 @@ import { usarCiudades } from '../ganchos/usarPeticion.js';
 import { usarPortadas } from '../ganchos/usarPortadas.js';
 import { IDIOMAS } from '../traducciones/textos.js';
 import { SITIO, enlaceWhatsapp } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 import { IconoFacebook, IconoInstagram, IconoTiktok, IconoUsuario } from './Iconos.jsx';
 
 export default function BarraNavegacion() {
@@ -124,6 +125,7 @@ export default function BarraNavegacion() {
             href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
             target="_blank"
             rel="noreferrer"
+            onClick={reportarClicWhatsapp}
           >
             {t.reservar}
           </a>

@@ -3193,6 +3193,73 @@ main.bajo-cabecera { padding-top: 0; }
   }
 }
 
+/* ── Aviso de cookies ──
+   Abajo a la izquierda, para no tapar el WhatsApp flotante en escritorio.
+   Aceptar y rechazar pesan lo mismo a la vista: la AEPD pide que rechazar
+   sea tan facil como aceptar. */
+.aviso-cookies {
+  position: fixed;
+  left: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  width: min(400px, calc(100vw - 48px));
+  padding: 20px 22px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  box-shadow: var(--sombra-media);
+}
+
+.aviso-cookies-titulo {
+  margin-bottom: 6px;
+  font-family: var(--fuente-titulos);
+  font-size: 17px;
+  color: var(--tinta);
+}
+
+.aviso-cookies-botones {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.aviso-cookies-botones button {
+  flex: 1;
+  min-height: 44px;
+  padding: 0 18px;
+  font: inherit;
+  font-weight: 500;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.aviso-cookies-rechazar {
+  color: var(--rojo);
+  background: transparent;
+  border: 1px solid var(--rojo);
+}
+
+.aviso-cookies-rechazar:hover { background: var(--fondo-rosado); }
+
+.aviso-cookies-aceptar {
+  color: #fff;
+  background: var(--rojo);
+  border: 1px solid var(--rojo);
+}
+
+.aviso-cookies-aceptar:hover { background: var(--rojo-oscuro); }
+
+@media (max-width: 640px) {
+  .aviso-cookies {
+    left: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    width: calc(100vw - 32px);
+  }
+}
+
 /* =========================================
    23. VISOR DE IMAGENES A PANTALLA COMPLETA
    ========================================= */

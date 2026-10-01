@@ -17,6 +17,7 @@ import { IconoCorreo, IconoTelefono, IconoChat, IconoFlecha, IconoCheck } from '
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { apiContacto } from '../servicios/clienteApi.js';
 import { SITIO, enlaceWhatsapp } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 
 const FORMULARIO_VACIO = {
   nombre: '',
@@ -88,7 +89,7 @@ export default function PaginaContacto() {
   }
 
   const vias = [
-    { icono: <IconoChat />, etiqueta: 'WhatsApp', valor: SITIO.telefono, enlace: enlaceWhatsapp(t.mensajeWhatsappGeneral), externo: true },
+    { icono: <IconoChat />, etiqueta: 'WhatsApp', valor: SITIO.telefono, enlace: enlaceWhatsapp(t.mensajeWhatsappGeneral), externo: true, alPulsar: reportarClicWhatsapp },
     { icono: <IconoCorreo />, etiqueta: t.formCorreo, valor: SITIO.correo, enlace: `mailto:${SITIO.correo}` },
     { icono: <IconoTelefono />, etiqueta: t.formTelefono, valor: SITIO.telefono, enlace: `tel:+${SITIO.whatsapp}` },
   ];
@@ -108,7 +109,11 @@ export default function PaginaContacto() {
         <ul className="contacto-vias">
           {vias.map((via) => (
             <li key={via.etiqueta}>
-              <a href={via.enlace} {...(via.externo ? { target: '_blank', rel: 'noreferrer' } : {})}>
+              <a
+                href={via.enlace}
+                {...(via.externo ? { target: '_blank', rel: 'noreferrer' } : {})}
+                onClick={via.alPulsar}
+              >
                 <span className="contacto-vias-icono">{via.icono}</span>
                 <span className="contacto-vias-texto">
                   <small>{via.etiqueta}</small>

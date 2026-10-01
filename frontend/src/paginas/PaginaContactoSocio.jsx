@@ -13,6 +13,7 @@ import { usarPeticion } from '../ganchos/usarPeticion.js';
 import { Cargando } from '../componentes/Estado.jsx';
 import FondoSakura from '../componentes/FondoSakura.jsx';
 import { SITIO } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 
 /**
  * wa.me solo acepta digitos: los espacios, guiones y el signo mas que se
@@ -85,7 +86,13 @@ export default function PaginaContactoSocio() {
 
         <div className="socio-botones">
           {whatsapp && (
-            <a className="socio-boton whatsapp" href={whatsapp} target="_blank" rel="noreferrer">
+            <a
+              className="socio-boton whatsapp"
+              href={whatsapp}
+              target="_blank"
+              rel="noreferrer"
+              onClick={reportarClicWhatsapp}
+            >
               <i className="fab fa-whatsapp" /> Escribirme por WhatsApp
             </a>
           )}

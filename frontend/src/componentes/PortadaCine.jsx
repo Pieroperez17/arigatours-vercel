@@ -18,6 +18,7 @@ import { IconoChat } from './Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { usarPortadas } from '../ganchos/usarPortadas.js';
 import { enlaceWhatsapp } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 
 const SEGUNDOS_POR_FOTO = 7000;
 const dosCifras = (numero) => String(numero).padStart(2, '0');
@@ -67,6 +68,7 @@ export default function PortadaCine() {
             href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
             target="_blank"
             rel="noreferrer"
+            onClick={reportarClicWhatsapp}
           >
             <IconoChat tamano={18} /> {t.reservarWhatsapp}
           </a>

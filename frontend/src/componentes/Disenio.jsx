@@ -12,10 +12,12 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 import BarraNavegacion from './BarraNavegacion.jsx';
 import PiePagina from './PiePagina.jsx';
+import AvisoCookies from './AvisoCookies.jsx';
 import { IconoChat } from './Iconos.jsx';
 import { usarIdioma } from '../contexto/ContextoIdioma.jsx';
 import { usarRevelado } from '../ganchos/usarRevelado.js';
 import { enlaceWhatsapp } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 
 /*
  * Las paginas de contacto de un socio (/contacto/daniela) son un caso
@@ -70,6 +72,7 @@ export default function Disenio() {
           href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
           target="_blank"
           rel="noreferrer"
+          onClick={reportarClicWhatsapp}
           className="whatsapp-flotante"
           aria-label={t.reservarWhatsapp}
         >
@@ -77,6 +80,8 @@ export default function Disenio() {
           <span className="whatsapp-flotante-texto">{t.hablamos}</span>
         </a>
       )}
+
+      <AvisoCookies />
     </>
   );
 }

@@ -1,6 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <!--
+      Etiqueta de Google Ads con Consent Mode v2. Va lo primero del <head>,
+      como pide Google, y en este orden:
+
+        1. El consentimiento por defecto, ANTES de gtag('config'). Para el EEE
+           y el Reino Unido todo arranca en "denied"; en el resto del mundo,
+           en "granted". La regla con region manda sobre la general, asi que
+           el orden de las dos llamadas da igual.
+        2. Si el visitante ya eligio en otra visita, se aplica su eleccion
+           antes de la config, para que la primera pagina ya salga bien.
+        3. La config y la funcion de conversion de WhatsApp.
+
+      El banner (componentes/AvisoCookies.jsx) guarda la eleccion en
+      localStorage con la misma clave que se lee aqui.
+    -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        region: [
+          'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE',
+          'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT',
+          'RO', 'SK', 'SI', 'ES', 'SE', 'IS', 'LI', 'NO', 'GB'
+        ],
+        wait_for_update: 500
+      });
+      gtag('consent', 'default', {
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+        analytics_storage: 'granted'
+      });
+      gtag('set', 'ads_data_redaction', true);
+
+      (function () {
+        var eleccion = null;
+        try { eleccion = localStorage.getItem('arigatours_cookies'); } catch (e) {}
+        if (eleccion !== 'aceptadas' && eleccion !== 'rechazadas') return;
+        var valor = eleccion === 'aceptadas' ? 'granted' : 'denied';
+        gtag('consent', 'update', {
+          ad_storage: valor,
+          ad_user_data: valor,
+          ad_personalization: valor,
+          analytics_storage: valor
+        });
+      })();
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18458984758"></script>
+    <script>
+      gtag('js', new Date());
+      gtag('config', 'AW-18458984758');
+
+      function reportWhatsAppClick() {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-18458984758/lXDcCNjToIsdELaC9-FE',
+          'value': 1.0,
+          'currency': 'JPY',
+          'transport_type': 'beacon'
+        });
+      }
+    </script>
     <meta charset="UTF-8" />
     <meta name="theme-color" content="#9B1515" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />

@@ -24,6 +24,7 @@ import { usarTours, usarBlogs } from '../ganchos/usarPeticion.js';
 import { RESENAS } from '../datos/resenas.js';
 import { PARRAFOS_QUIENES_SOMOS } from '../traducciones/textos.js';
 import { SITIO, enlaceWhatsapp } from '../configuracion/sitio.js';
+import { reportarClicWhatsapp } from '../servicios/seguimiento.js';
 
 const DESTACADOS = 3;
 const LARGO_RESUMEN = 190;
@@ -224,6 +225,7 @@ function Recorrido() {
           href={enlaceWhatsapp(t.mensajeWhatsappGeneral)}
           target="_blank"
           rel="noreferrer"
+          onClick={reportarClicWhatsapp}
         >
           <IconoChat tamano={18} /> {t.pasosBoton}
         </a>
