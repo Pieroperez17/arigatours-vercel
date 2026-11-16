@@ -38,7 +38,7 @@ export const SITIO = {
   // El mismo logo en blanco, para el pie, que va sobre rojo oscuro.
   logoBlanco: '/recursos/logo-blanco.svg',
 
-  correo: 'contacto@arigatours.com',
+  correo: 'arigatoursceo@gmail.com',
 
   /*
    * Se escribe "+81 70-..." y no "+81 070-...", que es como se marca dentro
